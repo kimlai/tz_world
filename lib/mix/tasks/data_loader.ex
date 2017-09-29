@@ -31,12 +31,11 @@ defmodule Mix.Tasks.TzWorld.Install do
     with archive <- download_archive(@data_file),
          {:ok, [file]} <- unzip(archive),
          {:ok, data} <- read(file),
-         {:ok, json} <- Poison.decode(data)
+         {:ok, json} <- parse_json(data)
     do
       json
       |> decode()
-      |> log("Populating the database...")
-      |> Enum.map(&repo.insert/1)
+      |> bulk_insert(repo)
       File.rm_rf file
     end
   end
@@ -53,8 +52,23 @@ defmodule Mix.Tasks.TzWorld.Install do
     end
 
   defp read(file) do
-    IO.puts "Parsing geotada..."
+    IO.puts "Reading geotada..."
     File.read(file)
+  end
+
+  defp parse_json(data) do
+    IO.puts "Parsing json..."
+    Poison.Parser.parse(data)
+  end
+
+  defp bulk_insert(entries, repo) do
+    IO.puts "Populating the database..."
+    repo_opts = [pool_timeout: :infinity]
+    task_opts = [timeout: :infinity, max_concurrency: System.schedulers_online * 2, ordered: false]
+    entries
+    |> Enum.chunk_every(5)
+    |> Task.async_stream(fn(chunk) -> repo.insert_all(TimezoneGeometry, chunk, repo_opts) end, task_opts)
+    |> Stream.run()
   end
 
   defp decode(%{"features" => timezones}) do
@@ -62,11 +76,6 @@ defmodule Mix.Tasks.TzWorld.Install do
   end
 
   defp decode(%{"properties" => %{"tzid" => timezone}, "geometry" => geometry}) do
-    %TimezoneGeometry{timezone: timezone, geometry: Geo.JSON.decode(geometry)}
-  end
-
-  defp log(value, message) do
-    IO.puts message
-    value
+    %{timezone: timezone, geometry: Geo.JSON.decode(geometry)}
   end
 end
