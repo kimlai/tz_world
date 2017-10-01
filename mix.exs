@@ -22,6 +22,7 @@ defmodule TzWorld.Mixfile do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
+      mod: {TzWorld.Application, []},
       extra_applications: [:logger, :ecto]
     ]
   end
@@ -29,12 +30,7 @@ defmodule TzWorld.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:postgrex, ">= 0.0.0"},
-      {:ecto, "~> 2.1"},
-      {:geo, "~> 2.0"},
-      {:geo_postgis, "~> 1.0"},
-      {:poison, "~> 3.1"},
-      {:httpoison, "~> 0.12"},
+      {:geo, "~> 1.0"},
       {:ex_doc, "~> 0.16", only: :dev, runtime: false},
     ]
   end
