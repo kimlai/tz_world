@@ -4,7 +4,7 @@ This is the changelog for Tz_World v0.2.0 released on ____.  For older changelog
 
 ### Breaking Changes
 
-* `timezone_at/1` returns tagged tuples `{:ok, result}` or `{:error, reason}`. There can be at least two reasons for an error: no data file is available or no timezone is found. These return `{:error, :enoent}` and `{:error, :notfound}` respectively
+* `timezone_at/1` returns tagged tuples `{:ok, result}` or `{:error, reason}`. There can be at least two reasons for an error: no data file is available or no timezone is found. These return `{:error, :enoent}` and `{:error, :timezone_not_found}` respectively
 
 * The timezone geojson data is no longer included in the package. Run `mix tz_world.update` to install or update it.
 
