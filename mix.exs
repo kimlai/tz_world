@@ -8,7 +8,7 @@ defmodule TzWorld.Mixfile do
       app: :tz_world,
       name: "TzWord",
       version: @version,
-      elixir: "~> 1.8",
+      elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       docs: docs(),
@@ -32,10 +32,10 @@ defmodule TzWorld.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:geo, "~> 3.0"},
+      {:geo, "~> 1.0 or ~> 2.0 or ~> 3.0"},
       {:jason, "~> 1.0", optional: true},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false},
-      {:dialyxir, "~> 1.0.0-rc", only: :dev, runtime: false, optional: true},
+      {:dialyxir, "~> 1.0.0-rc", only: :dev, runtime: false, optional: true}
     ]
   end
 
@@ -65,7 +65,7 @@ defmodule TzWorld.Mixfile do
     %{
       "GitHub" => "https://github.com/kimlai/tz_world",
       "Readme" => "https://github.com/kimlai/tz_world/blob/v#{@version}/README.md",
-      "Changelog" => "https://github.com/kimlai/tz_world/blob/v#{@version}/CHANGELOG.md",
+      "Changelog" => "https://github.com/kimlai/tz_world/blob/v#{@version}/CHANGELOG.md"
     }
   end
 
@@ -77,9 +77,8 @@ defmodule TzWorld.Mixfile do
         "README.md",
         "LICENSE.md",
         "CHANGELOG.md"
-        ],
+      ],
       skip_undefined_reference_warnings_on: ["changelog"]
     ]
   end
-
 end

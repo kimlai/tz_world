@@ -94,5 +94,4 @@ defmodule TzWorld.GeoData do
     bounding_box = [{x_min, y_max}, {x_min, y_min}, {x_max, y_min}, {x_max, y_max}]
     %Geo.Polygon{coordinates: [bounding_box], srid: 3857}
   end
-
 end

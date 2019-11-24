@@ -43,12 +43,12 @@ defmodule TzWorld do
   point is returned, or `nil` if none of the timzones match.
 
   """
-  @spec timezone_at(Geo.Point.t()) :: String.t() | nil
+  @spec timezone_at(Geo.Point.t()) :: {:ok, String.t()} | {:error, String.t()}
   def timezone_at(%Point{} = point) do
     GenServer.call(__MODULE__, {:timezone_at, point}, @timeout)
   end
 
-  @spec timezone_at(lng :: number, lat :: number) :: String.t() | nil
+  @spec timezone_at(lng :: number, lat :: number) :: {:ok, String.t()} | {:error, String.t()}
   def timezone_at(lng, lat) when is_lng(lng) and is_lat(lat) do
     point = %Geo.Point{coordinates: {lng, lat}}
     GenServer.call(__MODULE__, {:timezone_at, point}, @timeout)
@@ -57,7 +57,7 @@ defmodule TzWorld do
   @doc """
   Reload the timezone geo JSON data.
 
-  This allows for th data to be reloaded,
+  This allows for the data to be reloaded,
   typically with a new release, without
   restarting the application.
 
@@ -96,10 +96,8 @@ defmodule TzWorld do
         |> case do
           %Geo.MultiPolygon{properties: %{tzid: tzid}} -> {:ok, tzid}
           %Geo.Polygon{properties: %{tzid: tzid}} -> {:ok, tzid}
-          nil -> {:error, :notfound}
+          nil -> {:error, :timezone_not_found}
         end
-      else
-        other -> other
       end
 
     {:reply, timezone, state}

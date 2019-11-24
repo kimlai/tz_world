@@ -44,6 +44,7 @@ defmodule TzWorld.Downloader do
     case current_release() do
       {:ok, current_release} ->
         {latest_release, asset_url} = latest_release()
+
         if latest_release > current_release do
           get_and_load_latest_release(latest_release, asset_url)
         else
@@ -99,7 +100,9 @@ defmodule TzWorld.Downloader do
       {_, {{_version, code, message}, _headers, body}} ->
         Logger.bare_log(
           :error,
-          "Failed to download from #{inspect url}. HTTP Error: (#{code}) #{inspect(message)}. #{inspect body}"
+          "Failed to download from #{inspect(url)}. HTTP Error: (#{code}) #{inspect(message)}. #{
+            inspect(body)
+          }"
         )
 
         {:error, code}
