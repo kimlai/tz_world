@@ -1,6 +1,6 @@
 # Changelog for Tz_World v0.2.0
 
-This is the changelog for Tz_World v0.2.0 released on ____.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
+This is the changelog for Tz_World v0.2.0 released on November 28th, 2019.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
 
 ### Breaking Changes
 
@@ -29,8 +29,6 @@ This is the changelog for Tz_World v0.2.0 released on ____.  For older changelog
 * Added `CHANGELOG.md`
 
 * Added SRID to the GeoJSON
-
-* Updated package and ran dialyzer
 
 * Added a config option :data_dir specifies the location of the compressed etf. Default is `./priv`
 
