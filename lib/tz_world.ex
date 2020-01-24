@@ -4,7 +4,9 @@ defmodule TzWorld do
 
   """
   use GenServer
-  alias Geo.Point
+
+  alias Geo.{Point, PointZ}
+
   import TzWorld.Guards
   alias TzWorld.GeoData
 
@@ -45,6 +47,12 @@ defmodule TzWorld do
   """
   @spec timezone_at(Geo.Point.t()) :: {:ok, String.t()} | {:error, String.t()}
   def timezone_at(%Point{} = point) do
+    GenServer.call(__MODULE__, {:timezone_at, point}, @timeout)
+  end
+
+  @spec timezone_at(Geo.PointZ.t()) :: {:ok, String.t()} | {:error, String.t()}
+  def timezone_at(%PointZ{coordinates: {lng, lat, _alt}}) do
+    point = %Point{coordinates: {lng, lat}}
     GenServer.call(__MODULE__, {:timezone_at, point}, @timeout)
   end
 
@@ -96,7 +104,7 @@ defmodule TzWorld do
         |> case do
           %Geo.MultiPolygon{properties: %{tzid: tzid}} -> {:ok, tzid}
           %Geo.Polygon{properties: %{tzid: tzid}} -> {:ok, tzid}
-          nil -> {:error, :timezone_not_found}
+          nil -> {:error, :time_zone_not_found}
         end
       end
 

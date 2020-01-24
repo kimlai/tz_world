@@ -16,6 +16,8 @@ end
 
 After adding TzWorld as a dependency, run `mix deps.get` to install it. Then run `mix tz_world.update` to install the timezone data.
 
+**NOTE** No data is installed with the package and until the data is installed with `mix tz_world.update` all calls to `TzWorld.timezone_at/1` will return `{:error, :noent}`.
+
 ## Installing the Timezones Geo JSON data
 
 Installing `tz_world` from source or from hex does not include the timezones geo JSON data. The data is requried and to install or update it run:
@@ -51,6 +53,9 @@ iex> TzWorld.timezone_at(%Geo.Point{coordinates: {3.2, 45.32}})
 iex> TzWorld.timezone_at(3.2, 45.32)
 {:ok, "Europe/Paris"}
 
+iex> TzWorld.timezone_at(%Geo.PointZ{coordinates: {-74.006, 40.7128, 0.0}})
+{:ok, "America/New_York"}
+
 iex> TzWorld.timezone_at(%Geo.Point{coordinates: {1.3, 65.62}})
-{:error, :timezone_not_found}
+{:error, :time_zone_not_found}
 ```
