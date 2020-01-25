@@ -53,6 +53,9 @@ iex> TzWorld.timezone_at(%Geo.Point{coordinates: {3.2, 45.32}})
 iex> TzWorld.timezone_at(3.2, 45.32)
 {:ok, "Europe/Paris"}
 
+iex> TzWorld.timezone_at(%Geo.PointZ{coordinates: {-74.006, 40.7128, 0.0}})
+{:ok, "America/New_York"}
+
 iex> TzWorld.timezone_at(%Geo.Point{coordinates: {1.3, 65.62}})
-{:error, :timezone_not_found}
+{:error, :time_zone_not_found}
 ```

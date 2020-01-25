@@ -1,3 +1,15 @@
+# Changelog for Tz_World v0.3.0
+
+This is the changelog for Tz_World v0.3.0 released on December 4th, 2019.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
+
+### Breaking Changes
+
+* Changes the error return from `{:error, :timezone_not_found}` to `{:error, :time_zone_not_found}` since both Elixir and Tzdata use `time_zone`.
+
+### Enhancements
+
+* Allows both `%Geo.Point{}` and `%Geo.PointZ{}` as parameters to `TzWorld.timezone_at/1`
+
 # Changelog for Tz_World v0.2.0
 
 This is the changelog for Tz_World v0.2.0 released on November 28th, 2019.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
