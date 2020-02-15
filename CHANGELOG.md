@@ -1,6 +1,6 @@
 # Changelog for Tz_World v0.3.0
 
-This is the changelog for Tz_World v0.3.0 released on December 4th, 2019.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
+This is the changelog for Tz_World v0.3.0 released on February 16th, 2020.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
 
 ### Breaking Changes
 
