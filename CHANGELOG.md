@@ -9,7 +9,7 @@ This is the changelog for Tz_World v0.4.0 released on ______.  For older changel
 * `TzWorld.Backend.Memory` which retains all data in memory for fastest performance at the expense of using approximately 1Gb of memory
 * `TzWorld.Backend.Dets` which uses Erlang's `:dets` data store. This uses negligible memory at the expense of slow access times (approximaltey 500ms in testing)
 * `TzWorld.Backend.DetsWithIndexCache` which balances memory usage and performance. This backend is recommended in most situations since its performance is similar to `TzWorld.Backend.Memory` (about 5% slower in testing) and uses about 25Mb of memory
-* `TzWorld.Backend.Ets` which uses `:ets` for storage. With the default settings of `:compressed` for the `:ets` table its memory consumption is about 512Mb  but with access that is over 20 times slower than `TzWorld.Backend.DetsWithIndexCache`
+* `TzWorld.Backend.Ets` which uses `:ets` for storage. With the default settings of `:compressed` for the `:ets` table its memory consumption is about 512Mb but with access that is over 20 times slower than `TzWorld.Backend.DetsWithIndexCache`
 
 # Changelog for Tz_World v0.3.0
 
