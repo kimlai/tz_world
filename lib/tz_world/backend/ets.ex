@@ -45,18 +45,7 @@ defmodule TzWorld.Backend.Ets do
   """
   @spec timezone_at(Geo.Point.t()) :: {:ok, String.t()} | {:error, String.t()}
   def timezone_at(%Point{} = point) do
-    find_zone(point)
-  end
-
-  def find_zone(%Geo.Point{} = point) do
-    point
-    |> select_candidates()
-    |> Enum.find(&TzWorld.contains?(&1, point))
-    |> case do
-      %Geo.MultiPolygon{properties: %{tzid: tzid}} -> {:ok, tzid}
-      %Geo.Polygon{properties: %{tzid: tzid}} -> {:ok, tzid}
-      nil -> {:error, :time_zone_not_found}
-    end
+    GenServer.call(__MODULE__, {:timezone_at, point}, @timeout)
   end
 
   def select_candidates(%{coordinates: {lng, lat}}) do
@@ -83,17 +72,36 @@ defmodule TzWorld.Backend.Ets do
 
   # --- Server callback implementation
 
+  @doc false
   def handle_continue({:load_data, options}, _state) do
     __MODULE__ = :ets.new(__MODULE__, options)
     {:noreply, load_geodata()}
   end
 
+  @doc false
+  def handle_call({:timezone_at, %Geo.Point{} = point}, _from, state) do
+    {:reply, find_zone(point), state}
+  end
+
+  @doc false
   def handle_call(:version, _from, state) do
     [{_, version}] = :ets.lookup(__MODULE__, @tz_world_version)
     {:reply, version, state}
   end
 
+  @doc false
   def handle_call(:reload_data, _from, _state) do
     {:noreply, load_geodata()}
+  end
+
+  defp find_zone(%Geo.Point{} = point) do
+    point
+    |> select_candidates()
+    |> Enum.find(&TzWorld.contains?(&1, point))
+    |> case do
+      %Geo.MultiPolygon{properties: %{tzid: tzid}} -> {:ok, tzid}
+      %Geo.Polygon{properties: %{tzid: tzid}} -> {:ok, tzid}
+      nil -> {:error, :time_zone_not_found}
+    end
   end
 end

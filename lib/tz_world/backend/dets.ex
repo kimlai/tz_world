@@ -56,7 +56,7 @@ defmodule TzWorld.Backend.Dets do
   """
   @spec reload_timezone_data :: :ok
   def reload_timezone_data do
-    GenServer.call(__MODULE__, :reload_data, @timeout)
+    GenServer.call(__MODULE__, :reload_data, @timeout * 3)
   end
 
   @dets_file :code.priv_dir(:tz_world) ++ '/timezones-geodata.dets'
@@ -102,23 +102,30 @@ defmodule TzWorld.Backend.Dets do
 
   # --- Server callback implementation
 
+  @doc false
   def handle_continue(:open_dets_file, _state) do
     {:noreply, get_geodata_table()}
   end
 
+  @doc false
   def handle_call({:timezone_at, %Geo.Point{} = point}, _from, state) do
     {:reply, find_zone(point), state}
   end
 
+  @doc false
   def handle_call(:version, _from, state) do
     [{_, version}] = :dets.lookup(__MODULE__, @tz_world_version)
     {:reply, version, state}
   end
 
+  @doc false
   def handle_call(:reload_data, _from, state) do
-    {:reply, save_dets_geodata(), state}
+    :dets.close(__MODULE__)
+    :ok = save_dets_geodata()
+    {:reply, get_geodata_table(), state}
   end
 
+  @doc false
   defp find_zone(%Geo.Point{} = point) do
     point
     |> select_candidates()
