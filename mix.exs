@@ -35,7 +35,8 @@ defmodule TzWorld.Mixfile do
       {:geo, "~> 1.0 or ~> 2.0 or ~> 3.0"},
       {:jason, "~> 1.0", optional: true},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false},
-      {:dialyxir, "~> 1.0.0-rc", only: :dev, runtime: false, optional: true}
+      {:dialyxir, "~> 1.0.0-rc", only: :dev, runtime: false, optional: true},
+      {:benchee, "~> 1.0", only: :dev, runtime: false}
     ]
   end
 

@@ -5,7 +5,9 @@ defmodule TzWorld.Application do
 
   def start(_type, _args) do
     children = [
-      TzWorld
+      TzWorld.Backend.Dets,
+      TzWorld.Backend.Ets,
+      TzWorld.Backend.Memory
     ]
 
     opts = [strategy: :one_for_one, name: TzWorld.Supervisor]

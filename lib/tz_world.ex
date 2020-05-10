@@ -3,124 +3,48 @@ defmodule TzWorld do
   Resolve a timezone name from coordinates.
 
   """
-  use GenServer
-
   alias Geo.{Point, PointZ}
-
   import TzWorld.Guards
-  alias TzWorld.GeoData
-
-  @timeout 10_000
-
-  @doc false
-  def start_link(_) do
-    GenServer.start_link(__MODULE__, [], name: __MODULE__)
-  end
-
-  def init(_state) do
-    {:ok, [], {:continue, :load_data}}
-  end
 
   def version do
-    GenServer.call(__MODULE__, :version, @timeout)
+    fetch_backend().version()
   end
 
-  @doc """
-  Returns the timezone name for the given coordinates specified
-  as either a `Geo.Point` or as `lng` and `lat` parameters
+  @reload_backends [TzWorld.Backend.Memory, TzWorld.Backend.Dets, TzWorld.Backend.Ets]
+  def reload_timezone_data do
+    Enum.map(@reload_backends, fn backend -> apply(backend, :reload_timezone_data, []) end)
+  end
 
-  ## Examples
-
-      iex> TzWorld.timezone_at(%Geo.Point{coordinates: {3.2, 45.32}})
-      {:ok, "Europe/Paris"}
-
-      iex> TzWorld.timezone_at(3.2, 45.32)
-      {:ok, "Europe/Paris"}
-
-
-  The algorithm starts by filtering out timezones whose bounding
-  box does not contain the given point.
-
-  Once filtered, the first timezone which contains the given
-  point is returned, or `nil` if none of the timzones match.
-
-  """
   @spec timezone_at(Geo.Point.t()) :: {:ok, String.t()} | {:error, String.t()}
-  def timezone_at(%Point{} = point) do
-    GenServer.call(__MODULE__, {:timezone_at, point}, @timeout)
+  def timezone_at(point, backend \\ fetch_backend())
+
+  def timezone_at(%Point{} = point, backend) do
+    backend.timezone_at(point)
   end
 
   @spec timezone_at(Geo.PointZ.t()) :: {:ok, String.t()} | {:error, String.t()}
-  def timezone_at(%PointZ{coordinates: {lng, lat, _alt}}) do
+  def timezone_at(%PointZ{coordinates: {lng, lat, _alt}}, backend) do
     point = %Point{coordinates: {lng, lat}}
-    GenServer.call(__MODULE__, {:timezone_at, point}, @timeout)
+    backend.timezone_at(point)
   end
 
   @spec timezone_at(lng :: number, lat :: number) :: {:ok, String.t()} | {:error, String.t()}
-  def timezone_at(lng, lat) when is_lng(lng) and is_lat(lat) do
+  def timezone_at(lng, lat, backend) when is_lng(lng) and is_lat(lat) do
     point = %Geo.Point{coordinates: {lng, lat}}
-    GenServer.call(__MODULE__, {:timezone_at, point}, @timeout)
+    backend.timezone_at(point)
   end
 
-  @doc """
-  Reload the timezone geo JSON data.
-
-  This allows for the data to be reloaded,
-  typically with a new release, without
-  restarting the application.
-
-  """
-  @spec reload_timezone_data :: :ok
-  def reload_timezone_data do
-    GenServer.call(__MODULE__, :reload_data, @timeout)
-  end
-
-  # --- Server callback implementation
-
-  def handle_continue(:load_data, _state) do
-    {:noreply, GeoData.load_compressed_data()}
-  end
-
-  def handle_call(:reload_data, _from, _state) do
-    case GeoData.load_compressed_data() do
-      {:ok, _data} = return -> {:reply, :ok, return}
-      other -> {:reply, other, other}
-    end
-  end
-
-  def handle_call(:version, _from, state) do
-    case state do
-      {:ok, [version | _tz_data]} -> {:reply, {:ok, version}, state}
-      other -> {:reply, other, state}
-    end
-  end
-
-  def handle_call({:timezone_at, %Geo.Point{} = point}, _from, state) do
-    timezone =
-      with {:ok, [_version | tz_data]} <- state do
-        tz_data
-        |> Enum.filter(fn geometry -> contains?(geometry.properties.bounding_box, point) end)
-        |> Enum.find(&contains?(&1, point))
-        |> case do
-          %Geo.MultiPolygon{properties: %{tzid: tzid}} -> {:ok, tzid}
-          %Geo.Polygon{properties: %{tzid: tzid}} -> {:ok, tzid}
-          nil -> {:error, :time_zone_not_found}
-        end
-      end
-
-    {:reply, timezone, state}
-  end
-
-  defp contains?(%Geo.MultiPolygon{} = multi_polygon, %Geo.Point{} = point) do
+  @doc false
+  def contains?(%Geo.MultiPolygon{} = multi_polygon, %Geo.Point{} = point) do
     multi_polygon.coordinates
     |> Enum.any?(fn polygon -> contains?(%Geo.Polygon{coordinates: polygon}, point) end)
   end
 
-  defp contains?(%Geo.Polygon{coordinates: [envelope | holes]}, %Geo.Point{coordinates: point}) do
+  def contains?(%Geo.Polygon{coordinates: [envelope | holes]}, %Geo.Point{coordinates: point}) do
     interior?(envelope, point) && disjoint?(holes, point)
   end
 
-  defp contains?(bounding_boxes, point) when is_list(bounding_boxes) do
+  def contains?(bounding_boxes, point) when is_list(bounding_boxes) do
     Enum.any?(bounding_boxes, &contains?(&1, point))
   end
 
@@ -144,5 +68,11 @@ defmodule TzWorld do
     else
       crosses
     end
+  end
+
+  @backend_precedence [TzWorld.Backend.Memory, TzWorld.Backend.Ets, TzWorld.Backend.Dets]
+  def fetch_backend do
+    Enum.find(@backend_precedence, &Process.whereis/1) ||
+    raise(RuntimeError, "No TzWorld backend appears to be running")
   end
 end
