@@ -1,7 +1,7 @@
 defmodule TzWorld.Mixfile do
   use Mix.Project
 
-  @version "0.4.0-dev"
+  @version "0.3.0"
 
   def project do
     [
@@ -31,6 +31,7 @@ defmodule TzWorld.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:ex2ms, "~> 1.6"},
       {:geo, "~> 1.0 or ~> 2.0 or ~> 3.0"},
       {:jason, "~> 1.0", optional: true},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false},

@@ -10,7 +10,13 @@ defmodule TzWorld do
     fetch_backend().version()
   end
 
-  @reload_backends [TzWorld.Backend.Memory, TzWorld.Backend.Dets, TzWorld.Backend.Ets]
+  @reload_backends [
+    TzWorld.Backend.Memory,
+    TzWorld.Backend.Dets,
+    TzWorld.Backend.DetsWithIndexCache,
+    TzWorld.Backend.Ets
+  ]
+
   def reload_timezone_data do
     Enum.map(@reload_backends, fn backend -> apply(backend, :reload_timezone_data, []) end)
   end
@@ -70,7 +76,13 @@ defmodule TzWorld do
     end
   end
 
-  @backend_precedence [TzWorld.Backend.Memory, TzWorld.Backend.Ets, TzWorld.Backend.Dets]
+  @backend_precedence [
+    TzWorld.Backend.Memory,
+    TzWorld.Backend.DetsWithIndexCache,
+    TzWorld.Backend.Ets,
+    TzWorld.Backend.Dets
+  ]
+
   def fetch_backend do
     Enum.find(@backend_precedence, &Process.whereis/1) ||
       raise(RuntimeError, "No TzWorld backend appears to be running")

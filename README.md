@@ -14,9 +14,38 @@ def deps do
 end
 ```
 
-After adding TzWorld as a dependency, run `mix deps.get` to install it. Then run `mix tz_world.update` to install the timezone data.
+After adding `TzWorld` as a dependency, run `mix deps.get` to install it. Then run `mix tz_world.update` to install the timezone data.
 
 **NOTE** No data is installed with the package and until the data is installed with `mix tz_world.update` all calls to `TzWorld.timezone_at/1` will return `{:error, :noent}`.
+
+## Backend selection
+
+`TzWorld` provides alternative strategies for managing access to the backend data. Each backend is implemented as a `GenServer` that needs to be either manually started with `BackendModule.start_link/1` or preferably added to your applications supervisor tree.
+
+For example:
+```elixir
+defmodule MyApp.Application do
+  @moduledoc false
+
+  use Application
+
+  def start(_type, _args) do
+    children = [
+      ...
+			TzWorld.Backend.DetsWithIndexCache
+    ]
+
+    opts = [strategy: :one_for_one, name: MyApp.Supervisor]
+    Supervisor.start_link(children, opts)
+  end
+end
+```
+The following backends are available:
+
+* `TzWorld.Backend.Memory` which retains all data in memory for fastest performance at the expense of using approximately 1Gb of memory
+* `TzWorld.Backend.Dets` which uses Erlang's `:dets` data store. This uses negligible memory at the expense of slow access times (approximaltey 500ms in testing)
+* `TzWorld.Backend.DetsWithIndexCache` which balances memory usage and performance. This backend is recommended in most situations since its performance is similar to `TzWorld.Backend.Memory` (about 5% slower in testing) and uses about 25Mb of memory
+* `TzWorld.Backend.Ets` which uses `:ets` for storage. With the default settings of `:compressed` for the `:ets` table its memory consumption is about 512Mb  but with access that is over 20 times slower than `TzWorld.Backend.DetsWithIndexCache`
 
 ## Installing the Timezones Geo JSON data
 
@@ -44,7 +73,7 @@ A running application can also be instructed to reload the data by executing `Tz
 
 ## Usage
 
-The primary API is `TzWorld.timezone_at`. It takes either a `Geo.Point` struct or a `longitude` and `latitude` in degrees. Note the parameter order: `longitude`, `latitude`.
+The primary API is `TzWorld.timezone_at`. It takes either a `Geo.Point` struct or a `longitude` and `latitude` in degrees. Note the parameter order: `longitude`, `latitude`. It also takes and optional second parameter, `backend`, which must be one of the configured and running backend modules.  By default `timezone_at/2` will detect a running backend and will raise an exception if no running backend is found.
 
 ```elixir
 iex> TzWorld.timezone_at(%Geo.Point{coordinates: {3.2, 45.32}})
