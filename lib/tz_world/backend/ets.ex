@@ -96,5 +96,4 @@ defmodule TzWorld.Backend.Ets do
   def handle_call(:reload_data, _from, _state) do
     {:noreply, load_geodata()}
   end
-
 end

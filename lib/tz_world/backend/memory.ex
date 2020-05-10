@@ -94,5 +94,4 @@ defmodule TzWorld.Backend.Memory do
 
     {:reply, timezone, state}
   end
-
 end

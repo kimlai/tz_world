@@ -73,6 +73,6 @@ defmodule TzWorld do
   @backend_precedence [TzWorld.Backend.Memory, TzWorld.Backend.Ets, TzWorld.Backend.Dets]
   def fetch_backend do
     Enum.find(@backend_precedence, &Process.whereis/1) ||
-    raise(RuntimeError, "No TzWorld backend appears to be running")
+      raise(RuntimeError, "No TzWorld backend appears to be running")
   end
 end

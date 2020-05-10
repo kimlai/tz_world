@@ -140,10 +140,8 @@ defmodule TzWorld.Backend.Dets do
       {
         {{:"$1", :"$2", :"$3", :"$4"}, :"$5"},
         [
-          {:andalso,
-            {:andalso, {:>=, lng, :"$1"}, {:"=<", lng, :"$2"}},
-            {:andalso, {:>=, lat, :"$3"}, {:"=<", lat, :"$4"}}
-          }
+          {:andalso, {:andalso, {:>=, lng, :"$1"}, {:"=<", lng, :"$2"}},
+           {:andalso, {:>=, lat, :"$3"}, {:"=<", lat, :"$4"}}}
         ],
         [:"$5"]
       }
