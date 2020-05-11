@@ -21,10 +21,12 @@ defmodule TzWorld.Backend.Memory do
     GenServer.call(__MODULE__, :version, @timeout)
   end
 
+  @spec timezone_at(Geo.Point.t()) :: {:ok, String.t()} | {:error, atom}
   def timezone_at(%Point{} = point) do
     GenServer.call(__MODULE__, {:timezone_at, point}, @timeout)
   end
 
+  @spec reload_timezone_data :: {:ok, term}
   def reload_timezone_data do
     GenServer.call(__MODULE__, :reload_data, @timeout)
   end
@@ -37,7 +39,7 @@ defmodule TzWorld.Backend.Memory do
 
   def handle_call(:reload_data, _from, _state) do
     case GeoData.load_compressed_data() do
-      {:ok, _data} = return -> {:reply, :ok, return}
+      {:ok, _data} = return -> {:reply, {:ok, :loaded}, return}
       other -> {:reply, other, other}
     end
   end

@@ -25,13 +25,12 @@ defmodule TzWorld.Backend.EtsWithIndexCache do
     GenServer.call(__MODULE__, :version, @timeout)
   end
 
-  @spec timezone_at(Geo.Point.t()) :: {:ok, String.t()} | {:error, String.t()}
+  @spec timezone_at(Geo.Point.t()) :: {:ok, String.t()} | {:error, atom}
   def timezone_at(%Point{} = point) do
     GenServer.call(__MODULE__, {:timezone_at, point}, @timeout)
   end
 
-
-  @spec reload_timezone_data :: :ok
+  @spec reload_timezone_data :: {:ok, term}
   def reload_timezone_data do
     GenServer.call(__MODULE__, :reload_data, @timeout)
   end
@@ -63,7 +62,7 @@ defmodule TzWorld.Backend.EtsWithIndexCache do
 
   @doc false
   def handle_call(:reload_data, _from, _state) do
-    {:reply, load_geodata(), get_index_cache()}
+    {:reply, {:ok, load_geodata()}, get_index_cache()}
   end
 
   defp find_zone(%Geo.Point{} = point, state) do

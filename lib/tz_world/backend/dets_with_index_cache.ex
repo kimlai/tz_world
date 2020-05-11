@@ -23,12 +23,12 @@ defmodule TzWorld.Backend.DetsWithIndexCache do
     GenServer.call(__MODULE__, :version, @timeout)
   end
 
-  @spec timezone_at(Geo.Point.t()) :: {:ok, String.t()} | {:error, String.t()}
+  @spec timezone_at(Geo.Point.t()) :: {:ok, String.t()} | {:error, atom}
   def timezone_at(%Point{} = point) do
     GenServer.call(__MODULE__, {:timezone_at, point}, @timeout)
   end
 
-  @spec reload_timezone_data :: :ok
+  @spec reload_timezone_data :: {:ok, term}
   def reload_timezone_data do
     GenServer.call(__MODULE__, :reload_data, @timeout * 3)
   end
@@ -98,7 +98,7 @@ defmodule TzWorld.Backend.DetsWithIndexCache do
     :dets.close(__MODULE__)
     :ok = save_dets_geodata()
     {:ok, __MODULE__} = get_geodata_table()
-    {:reply, get_geodata_table(), get_index_cache()}
+    {:reply, {:ok, get_geodata_table()}, get_index_cache()}
   end
 
   @doc false

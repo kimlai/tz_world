@@ -3,6 +3,6 @@ defmodule TzWorld.Backend do
   @type lng :: -180..180
   @type geo :: Geo.Point.t()
 
-  @callback timezone_at(geo) :: {:ok, term} | {:error, String.t()}
-  @callback reload_timezone_data :: :ok
+  @callback timezone_at(geo) :: {:ok, String.t()} | {:error, atom}
+  @callback reload_timezone_data :: {:ok, term}
 end

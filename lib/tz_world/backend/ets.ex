@@ -25,6 +25,7 @@ defmodule TzWorld.Backend.Ets do
     GenServer.call(__MODULE__, :version, @timeout)
   end
 
+  @spec timezone_at(Geo.Point.t()) :: {:ok, String.t()} | {:error, atom}
   def timezone_at(%Point{} = point) do
     GenServer.call(__MODULE__, {:timezone_at, point}, @timeout)
   end
@@ -33,6 +34,7 @@ defmodule TzWorld.Backend.Ets do
     :ets.select(__MODULE__, TzWorld.Backend.Dets.match_spec(lng, lat))
   end
 
+  @spec reload_timezone_data :: {:ok, term}
   def reload_timezone_data do
     GenServer.call(__MODULE__, :reload_data, @timeout)
   end
@@ -63,7 +65,7 @@ defmodule TzWorld.Backend.Ets do
 
   @doc false
   def handle_call(:reload_data, _from, _state) do
-    {:noreply, load_geodata()}
+    {:noreply, {:ok, load_geodata()}}
   end
 
   defp find_zone(%Geo.Point{} = point) do
