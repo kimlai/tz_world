@@ -21,40 +21,10 @@ defmodule TzWorld.Backend.Memory do
     GenServer.call(__MODULE__, :version, @timeout)
   end
 
-  @doc """
-  Returns the timezone name for the given coordinates specified
-  as either a `Geo.Point` or as `lng` and `lat` parameters
-
-  ## Examples
-
-      iex> TzWorld.timezone_at(%Geo.Point{coordinates: {3.2, 45.32}})
-      {:ok, "Europe/Paris"}
-
-      iex> TzWorld.timezone_at(3.2, 45.32)
-      {:ok, "Europe/Paris"}
-
-
-  The algorithm starts by filtering out timezones whose bounding
-  box does not contain the given point.
-
-  Once filtered, the first timezone which contains the given
-  point is returned, or `nil` if none of the timezones match.
-
-  """
-  @spec timezone_at(Geo.Point.t()) :: {:ok, String.t()} | {:error, String.t()}
   def timezone_at(%Point{} = point) do
     GenServer.call(__MODULE__, {:timezone_at, point}, @timeout)
   end
 
-  @doc """
-  Reload the timezone geo JSON data.
-
-  This allows for the data to be reloaded,
-  typically with a new release, without
-  restarting the application.
-
-  """
-  @spec reload_timezone_data :: :ok
   def reload_timezone_data do
     GenServer.call(__MODULE__, :reload_data, @timeout)
   end

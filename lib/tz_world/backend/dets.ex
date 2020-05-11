@@ -1,4 +1,6 @@
 defmodule TzWorld.Backend.Dets do
+  @moduledoc false
+
   @behaviour TzWorld.Backend
 
   use GenServer
@@ -21,69 +23,43 @@ defmodule TzWorld.Backend.Dets do
     GenServer.call(__MODULE__, :version, @timeout)
   end
 
-  @doc """
-  Returns the timezone name for the given coordinates specified
-  as either a `Geo.Point` or as `lng` and `lat` parameters
-
-  ## Examples
-
-      iex> TzWorld.timezone_at(%Geo.Point{coordinates: {3.2, 45.32}})
-      {:ok, "Europe/Paris"}
-
-      iex> TzWorld.timezone_at(3.2, 45.32)
-      {:ok, "Europe/Paris"}
-
-
-  The algorithm starts by filtering out timezones whose bounding
-  box does not contain the given point.
-
-  Once filtered, the first timezone which contains the given
-  point is returned, or `nil` if none of the timezones match.
-
-  """
   @spec timezone_at(Geo.Point.t()) :: {:ok, String.t()} | {:error, String.t()}
   def timezone_at(%Point{} = point) do
     GenServer.call(__MODULE__, {:timezone_at, point}, @timeout)
   end
 
-  @doc """
-  Reload the timezone geo JSON data.
-
-  This allows for the data to be reloaded,
-  typically with a new release, without
-  restarting the application.
-
-  """
   @spec reload_timezone_data :: :ok
   def reload_timezone_data do
     GenServer.call(__MODULE__, :reload_data, @timeout * 3)
   end
 
-  @dets_file :code.priv_dir(:tz_world) ++ '/timezones-geodata.dets'
-  @slots 800
+  @slots 1_000
 
   def filename do
-    @dets_file
+    :code.priv_dir(:tz_world) ++ '/timezones-geodata.dets'
   end
 
-  @dets_options [file: @dets_file, estimated_no_objects: @slots]
+  def dets_options do
+    [file: filename(), estimated_no_objects: @slots]
+  end
+
   def get_geodata_table do
-    :dets.open_file(__MODULE__, @dets_options)
+    :dets.open_file(__MODULE__, dets_options())
   end
 
   def save_dets_geodata do
-    {:ok, t} = :dets.open_file(__MODULE__, @dets_options)
-    :ok = :dets.delete_all_objects(t)
+    {:ok, __MODULE__} = :dets.open_file(__MODULE__, dets_options())
+    :ok = :dets.delete_all_objects(__MODULE__)
 
     {:ok, geodata} = TzWorld.GeoData.load_compressed_data()
     [version | shapes] = geodata
 
     for shape <- shapes do
-      add_to_dets(t, shape)
+      add_to_dets(__MODULE__, shape)
     end
 
-    :ok = :dets.insert(t, {@tz_world_version, version})
-    :dets.close(t)
+    :ok = :dets.insert(__MODULE__, {@tz_world_version, version})
+    :dets.close(__MODULE__)
   end
 
   defp add_to_dets(t, shape) do

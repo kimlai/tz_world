@@ -3,7 +3,7 @@ defmodule TzWorldTest do
   doctest TzWorld
 
   @backends [TzWorld.Backend.Memory, TzWorld.Backend.Dets, TzWorld.Backend.Ets,
-    TzWorld.Backend.DetsWithIndexCache]
+    TzWorld.Backend.EtsWithIndexCache, TzWorld.Backend.DetsWithIndexCache]
 
   setup_all do
     for backend <- @backends do

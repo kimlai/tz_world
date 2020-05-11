@@ -6,6 +6,8 @@ defmodule TzWorld do
   alias Geo.{Point, PointZ}
   import TzWorld.Guards
 
+  @type backend :: module()
+
   def version do
     fetch_backend().version()
   end
@@ -14,28 +16,90 @@ defmodule TzWorld do
     TzWorld.Backend.Memory,
     TzWorld.Backend.Dets,
     TzWorld.Backend.DetsWithIndexCache,
-    TzWorld.Backend.Ets
+    TzWorld.Backend.Ets,
+    TzWorld.Backend.EtsWithIndexCache,
   ]
 
+  @doc """
+  Reload the timezone geometry data.
+
+  This allows for the data to be reloaded,
+  typically with a new release, without
+  restarting the application.
+
+  """
   def reload_timezone_data do
     Enum.map(@reload_backends, fn backend -> apply(backend, :reload_timezone_data, []) end)
   end
 
-  @spec timezone_at(Geo.Point.t()) :: {:ok, String.t()} | {:error, String.t()}
+  @doc """
+  Returns the *first* timezone name found for the given
+  coordinates specified as either a `Geo.Point`,
+  a `Geo.PointZ` or a tuple `{lng, lat}`
+
+  ## Arguments
+
+  * `point` is a `Geo.Point.t()` a `Geo.PointZ.t()` or
+    a tuple `{lng, lat}`
+
+  * `backend` is any backend access module.
+
+  ## Returns
+
+  * `{:ok, timezone}` or
+
+  * `{:error, :time_zone_not_found}`
+
+  ## Notes
+
+  Note that the point is always expressed as
+  `lng` followed by `lat`.
+
+  ## Examples
+
+      iex> TzWorld.timezone_at(%Geo.Point{coordinates: {3.2, 45.32}})
+      {:ok, "Europe/Paris"}
+
+      iex> TzWorld.timezone_at({3.2, 45.32})
+      {:ok, "Europe/Paris"}
+
+      iex> TzWorld.timezone_at({0.0, 0.0})
+      {:error, :time_zone_not_found}
+
+
+  The algorithm starts by filtering out timezones whose bounding
+  box does not contain the given point.
+
+  Once filtered, the *first* timezone which contains the given
+  point is returned, or an error tuple if none of the
+  timezones match.
+
+  In rare cases, typically due to territorial disputes,
+  one or more timezones may apply to a given location.
+  This function returns the first time zone that matches.
+
+  """
+  @spec timezone_at(Geo.Point.t(), backend) ::
+    {:ok, String.t()} | {:error, atom}
+
   def timezone_at(point, backend \\ fetch_backend())
 
-  def timezone_at(%Point{} = point, backend) do
+  def timezone_at(%Point{} = point, backend) when is_atom(backend) do
     backend.timezone_at(point)
   end
 
-  @spec timezone_at(Geo.PointZ.t()) :: {:ok, String.t()} | {:error, String.t()}
-  def timezone_at(%PointZ{coordinates: {lng, lat, _alt}}, backend) do
+  @spec timezone_at(Geo.PointZ.t(), backend) ::
+    {:ok, String.t()} | {:error, atom}
+
+  def timezone_at(%PointZ{coordinates: {lng, lat, _alt}}, backend) when is_atom(backend) do
     point = %Point{coordinates: {lng, lat}}
     backend.timezone_at(point)
   end
 
-  @spec timezone_at(lng :: number, lat :: number) :: {:ok, String.t()} | {:error, String.t()}
-  def timezone_at(lng, lat, backend) when is_lng(lng) and is_lat(lat) do
+  @spec timezone_at({lng :: number, lat :: number}, backend) ::
+    {:ok, String.t()} | {:error, atom}
+
+  def timezone_at({lng, lat}, backend) when is_lng(lng) and is_lat(lat) do
     point = %Geo.Point{coordinates: {lng, lat}}
     backend.timezone_at(point)
   end
@@ -77,6 +141,7 @@ defmodule TzWorld do
   end
 
   @backend_precedence [
+    TzWorld.Backend.EtsWithIndexCache,
     TzWorld.Backend.Memory,
     TzWorld.Backend.DetsWithIndexCache,
     TzWorld.Backend.Ets,
@@ -85,6 +150,9 @@ defmodule TzWorld do
 
   def fetch_backend do
     Enum.find(@backend_precedence, &Process.whereis/1) ||
-      raise(RuntimeError, "No TzWorld backend appears to be running")
+      raise(RuntimeError,
+        "No TzWorld backend appears to be running. " <>
+        "please add one of #{inspect @backend_precedence} to your supervision tree"
+      )
   end
 end
