@@ -55,11 +55,8 @@ This is the changelog for Tz_World v0.2.0 released on November 28th, 2019.  For 
 
 * Added SRID to the GeoJSON
 
-<<<<<<< HEAD
 * Updated package and ran dialyzer
 
-=======
->>>>>>> 25805788bb8cd9a5f08fbc050ab7e4363310f2e0
 * Added a config option :data_dir specifies the location of the compressed etf. Default is `./priv`
 
 * Updated README, package and docs
