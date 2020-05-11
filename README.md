@@ -9,7 +9,7 @@ Add `tz_world` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:tz_world, "~> 0.3.0"}
+    {:tz_world, "~> 0.4.0"}
   ]
 end
 ```
@@ -20,7 +20,7 @@ After adding `TzWorld` as a dependency, run `mix deps.get` to install it. Then r
 
 ## Backend selection
 
-`TzWorld` provides alternative strategies for managing access to the backend data. Each backend is implemented as a `GenServer` that needs to be either manually started with `BackendModule.start_link/1` or preferably added to your applications supervisor tree.
+`TzWorld` provides alternative strategies for managing access to the backend data. Each backend is implemented as a `GenServer` that needs to be either manually started with `BackendModule.start_link/1` or preferably added to your application's supervision tree.
 
 For example:
 ```elixir
@@ -46,6 +46,7 @@ The following backends are available:
 * `TzWorld.Backend.Dets` which uses Erlang's `:dets` data store. This uses negligible memory at the expense of slow access times (approximaltey 500ms in testing)
 * `TzWorld.Backend.DetsWithIndexCache` which balances memory usage and performance. This backend is recommended in most situations since its performance is similar to `TzWorld.Backend.Memory` (about 5% slower in testing) and uses about 25Mb of memory
 * `TzWorld.Backend.Ets` which uses `:ets` for storage. With the default settings of `:compressed` for the `:ets` table its memory consumption is about 512Mb  but with access that is over 20 times slower than `TzWorld.Backend.DetsWithIndexCache`
+* `TzWorld.Backend.EtsWithIndexCache` which uses `:ets` for storage with an additional in-memory cache of the bounding boxes. This still uses about 512Mb but is faster than any of the other backends by about 40%
 
 ## Installing the Timezones Geo JSON data
 
@@ -79,7 +80,7 @@ The primary API is `TzWorld.timezone_at`. It takes either a `Geo.Point` struct o
 iex> TzWorld.timezone_at(%Geo.Point{coordinates: {3.2, 45.32}})
 {:ok, "Europe/Paris"}
 
-iex> TzWorld.timezone_at(3.2, 45.32)
+iex> TzWorld.timezone_at({3.2, 45.32})
 {:ok, "Europe/Paris"}
 
 iex> TzWorld.timezone_at(%Geo.PointZ{coordinates: {-74.006, 40.7128, 0.0}})
