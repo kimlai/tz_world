@@ -10,6 +10,8 @@ defmodule Mix.Tasks.TzWorld.Update do
 
   def run(_args) do
     Application.ensure_all_started(:tz_world)
+    TzWorld.Backend.Memory.start_link
+    TzWorld.Backend.Dets.start_link
 
     case Downloader.current_release() do
       {:ok, current_release} ->

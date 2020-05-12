@@ -1,7 +1,7 @@
 defmodule TzWorld.Mixfile do
   use Mix.Project
 
-  @version "0.3.0"
+  @version "0.4.0"
 
   def project do
     [
@@ -24,7 +24,6 @@ defmodule TzWorld.Mixfile do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      mod: {TzWorld.Application, []},
       extra_applications: [:logger]
     ]
   end
@@ -33,9 +32,10 @@ defmodule TzWorld.Mixfile do
   defp deps do
     [
       {:geo, "~> 1.0 or ~> 2.0 or ~> 3.0"},
-      {:jason, "~> 1.0", optional: true},
+      {:jason, "~> 1.0"},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false},
-      {:dialyxir, "~> 1.0.0-rc", only: :dev, runtime: false, optional: true}
+      {:dialyxir, "~> 1.0.0-rc", only: :dev, runtime: false, optional: true},
+      {:benchee, "~> 1.0", only: :dev, runtime: false}
     ]
   end
 
@@ -49,7 +49,7 @@ defmodule TzWorld.Mixfile do
     [
       licenses: ["MIT"],
       links: links(),
-      maintainers: ["Kim Laï Trinh"],
+      maintainers: ["Kim Laï Trinh", "Kip Cole"],
       files: [
         "lib",
         "config",

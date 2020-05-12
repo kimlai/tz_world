@@ -55,8 +55,6 @@ defmodule TzWorld.Downloader do
         {latest_release, asset_url} = latest_release()
         get_and_load_latest_release(latest_release, asset_url)
 
-      other ->
-        other
     end
   end
 
@@ -69,6 +67,8 @@ defmodule TzWorld.Downloader do
   def get_latest_release(latest_release, asset_url) do
     with {:ok, source_data} <- get_url(asset_url) do
       GeoData.generate_compressed_data(source_data, latest_release)
+      TzWorld.Backend.Dets.start_link()
+      TzWorld.Backend.Dets.reload_timezone_data()
     end
   end
 

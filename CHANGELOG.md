@@ -1,3 +1,25 @@
+# Changelog for Tz_World v0.4.0
+
+This is the changelog for Tz_World v0.4.0 released on May 12th, 2020.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
+
+* Adds configurable backends. Each backend is a GenServer that must be added to an applications supervision tree or started manually.
+
+### Breaking change
+
+* When specifying a `lng`, `lat` to `TzWorld.timezone_at/2` the coordinates must be wrapped in a tuple. For example `TzWorld.timezone_at({3.2, 45.32})` making it consistent with the `Geo.Point` and `Geo.PointZ` strategies.
+
+### Configurable backends
+
+* `TzWorld.Backend.Memory` which retains all data in memory for fastest performance at the expense of using approximately 1Gb of memory
+* `TzWorld.Backend.Dets` which uses Erlang's `:dets` data store. This uses negligible memory at the expense of slow access times (approximaltey 500ms in testing)
+* `TzWorld.Backend.DetsWithIndexCache` which balances memory usage and performance. This backend is recommended in most situations since its performance is similar to `TzWorld.Backend.Memory` (about 5% slower in testing) and uses about 25Mb of memory
+* `TzWorld.Backend.Ets` which uses `:ets` for storage. With the default settings of `:compressed` for the `:ets` table its memory consumption is about 512Mb but with access that is over 20 times slower than `TzWorld.Backend.DetsWithIndexCache`
+* `TzWorld.Backend.EtsWithIndexCache` which uses `:ets` for storage with an additional in-memory cache of the bounding boxes. This still uses about 512Mb but is faster than any of the other backends by about 40%
+
+### Enhancements
+
+* Add `TzWorld.all_timezones_at/2` to return all timezones for a given location.  In rare cases, usually disputed territory, multiple timezones may be declared for a overlapping regions. `TzWorld.all_timezones_at/2` returns a (potentially empty) list of all time zones knowns for a given point.  *Futher testing of this function is required and will be completed before version 1.0*.
+
 # Changelog for Tz_World v0.3.0
 
 This is the changelog for Tz_World v0.3.0 released on February 16th, 2020.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
@@ -41,6 +63,8 @@ This is the changelog for Tz_World v0.2.0 released on November 28th, 2019.  For 
 * Added `CHANGELOG.md`
 
 * Added SRID to the GeoJSON
+
+* Updated package and ran dialyzer
 
 * Added a config option :data_dir specifies the location of the compressed etf. Default is `./priv`
 
