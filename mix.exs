@@ -1,7 +1,7 @@
 defmodule TzWorld.Mixfile do
   use Mix.Project
 
-  @version "0.4.0-dev"
+  @version "0.4.0"
 
   def project do
     [
@@ -49,7 +49,7 @@ defmodule TzWorld.Mixfile do
     [
       licenses: ["MIT"],
       links: links(),
-      maintainers: ["Kim Laï Trinh"],
+      maintainers: ["Kim Laï Trinh", "Kip Cole"],
       files: [
         "lib",
         "config",

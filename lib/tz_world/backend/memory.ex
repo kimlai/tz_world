@@ -45,8 +45,10 @@ defmodule TzWorld.Backend.Memory do
 
   @doc false
   def handle_continue(:load_data, _state) do
-    {:ok, tz_data} = GeoData.load_compressed_data()
-    {:noreply, tz_data}
+    case GeoData.load_compressed_data() do
+      {:ok, tz_data} -> {:noreply, tz_data}
+      other -> {:noreply, other}
+    end
   end
 
   @doc false
@@ -59,8 +61,10 @@ defmodule TzWorld.Backend.Memory do
 
   @doc false
   def handle_call(:version, _from, state) do
-    [version | _tz_data] = state
-    {:reply, {:ok, version}, state}
+    case state do
+      [version | _tz_data] -> {:reply, {:ok, version}, state}
+      other -> {:reply, other, state}
+    end
   end
 
   @doc false

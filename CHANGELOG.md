@@ -1,6 +1,6 @@
 # Changelog for Tz_World v0.4.0
 
-This is the changelog for Tz_World v0.4.0 released on ______.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
+This is the changelog for Tz_World v0.4.0 released on May 12th, 2020.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
 
 * Adds configurable backends. Each backend is a GenServer that must be added to an applications supervision tree or started manually.
 
@@ -15,6 +15,10 @@ This is the changelog for Tz_World v0.4.0 released on ______.  For older changel
 * `TzWorld.Backend.DetsWithIndexCache` which balances memory usage and performance. This backend is recommended in most situations since its performance is similar to `TzWorld.Backend.Memory` (about 5% slower in testing) and uses about 25Mb of memory
 * `TzWorld.Backend.Ets` which uses `:ets` for storage. With the default settings of `:compressed` for the `:ets` table its memory consumption is about 512Mb but with access that is over 20 times slower than `TzWorld.Backend.DetsWithIndexCache`
 * `TzWorld.Backend.EtsWithIndexCache` which uses `:ets` for storage with an additional in-memory cache of the bounding boxes. This still uses about 512Mb but is faster than any of the other backends by about 40%
+
+### Enhancements
+
+* Add `TzWorld.all_timezones_at/2` to return all timezones for a given location.  In rare cases, usually disputed territory, multiple timezones may be declared for a overlapping regions. `TzWorld.all_timezones_at/2` returns a (potentially empty) list of all time zones knowns for a given point.  *Futher testing of this function is required and will be completed before version 1.0*.
 
 # Changelog for Tz_World v0.3.0
 
