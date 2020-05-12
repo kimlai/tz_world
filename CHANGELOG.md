@@ -18,11 +18,11 @@ This is the changelog for Tz_World v0.4.0 released on May 12th, 2020.  For older
 
 ### Enhancements
 
-* Add `TzWorld.all_timezones_at/2` to return all timezones for a given location.  In rare cases, usually disputed territory, multiple timezones may be declared for overlapping regions. `TzWorld.all_timezones_at/2` returns a (potentially empty) list of all time zones knowns for a given point.  *Futher testing of this function is required and will be completed before version 1.0*.
+* Add `TzWorld.all_timezones_at/2` to return all timezones for a given location.  In rare cases, usually disputed territory, multiple timezones may be declared for overlapping regions. `TzWorld.all_timezones_at/2` returns a (potentially empty) list of all time zones known for a given point.  *Futher testing of this function is required and will be completed before version 1.0*.
 
 # Changelog for Tz_World v0.3.0
 
-This is the changelog for Tz_World v0.3.0 released on February 16th, 2020.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
+This is the changelog for Tz_World v0.3.0 released on December 4th, 2019.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
 
 ### Breaking Changes
 
