@@ -16,7 +16,7 @@ end
 
 After adding `TzWorld` as a dependency, run `mix deps.get` to install it. Then run `mix tz_world.update` to install the timezone data.
 
-**NOTE** No data is installed with the package and until the data is installed with `mix tz_world.update` all calls to `TzWorld.timezone_at/1` will return `{:error, :noent}`.
+**NOTE** No data is installed with the package and until the data is installed with `mix tz_world.update` all calls to `TzWorld.timezone_at/1` will return `{:error, :time_zone_not_found}`.
 
 ## Backend selection
 
@@ -32,7 +32,7 @@ defmodule MyApp.Application do
   def start(_type, _args) do
     children = [
       ...
-			TzWorld.Backend.DetsWithIndexCache
+      TzWorld.Backend.DetsWithIndexCache
     ]
 
     opts = [strategy: :one_for_one, name: MyApp.Supervisor]
@@ -56,19 +56,9 @@ mix tz_world.update
 ```
 This task will download, transform, zip and store the timezones geo data. Depending on internet and computer speed this may take a few minutes.
 
-### Data location
-
-By default the data will be placed in `./priv/tz_world`.
-
-An alternative location can be configured in `config.exs` as follows:
-```elixir
-config :tz_world,
-  data_dir: "some/directory"
-```
-
 ### Updating the Timezone data
 
-From time-to-time the timezones geo JSON data is updated in the [upstream project](https://github.com/evansiroky/timezone-boundary-builder/releases). The mix task `mix tz_world.update` will update the data if it is available. This task can be run at any time, it will detect when new data is available and only download it when a new release is available. The generated file `TIMEZONES_GEOJSON_VERSION` is used to track the current installed version of the data.
+From time-to-time the timezones geo JSON data is updated in the [upstream project](https://github.com/evansiroky/timezone-boundary-builder/releases). The mix task `mix tz_world.update` will update the data if it is available. This task can be run at any time, it will detect when new data is available and only download it when a new release is available.
 
 A running application can also be instructed to reload the data by executing `TzWorld.reload_timezone_data`.
 
