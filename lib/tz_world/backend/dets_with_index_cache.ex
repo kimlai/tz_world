@@ -129,11 +129,12 @@ defmodule TzWorld.Backend.DetsWithIndexCache do
     point
     |> select_candidates(state)
     |> Enum.filter(&TzWorld.contains?(&1, point))
-    |> case do
-      %Geo.MultiPolygon{properties: %{tzid: tzid}} -> {:ok, tzid}
-      %Geo.Polygon{properties: %{tzid: tzid}} -> {:ok, tzid}
-      nil -> {:error, :time_zone_not_found}
-    end
+    |> Enum.map(&(&1.properties.tzid))
+    |> wrap(:ok)
+  end
+
+  defp wrap(term, atom) do
+    {atom, term}
   end
 
   defp select_candidates(%{coordinates: {lng, lat}}, state) do

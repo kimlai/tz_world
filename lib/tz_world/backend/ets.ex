@@ -78,6 +78,18 @@ defmodule TzWorld.Backend.Ets do
     {:noreply, {:ok, load_geodata()}}
   end
 
+  defp find_zones(%Geo.Point{} = point) do
+    point
+    |> select_candidates()
+    |> Enum.filter(&TzWorld.contains?(&1, point))
+    |> Enum.map(&(&1.properties.tzid))
+    |> wrap(:ok)
+  end
+
+  defp wrap(term, atom) do
+    {atom, term}
+  end
+
   defp find_zone(%Geo.Point{} = point) do
     point
     |> select_candidates()
@@ -89,14 +101,4 @@ defmodule TzWorld.Backend.Ets do
     end
   end
 
-  defp find_zones(%Geo.Point{} = point) do
-    point
-    |> select_candidates()
-    |> Enum.filter(&TzWorld.contains?(&1, point))
-    |> case do
-      %Geo.MultiPolygon{properties: %{tzid: tzid}} -> {:ok, tzid}
-      %Geo.Polygon{properties: %{tzid: tzid}} -> {:ok, tzid}
-      nil -> {:error, :time_zone_not_found}
-    end
-  end
 end

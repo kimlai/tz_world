@@ -78,13 +78,14 @@ defmodule TzWorld.Backend.Memory do
         tz_data
         |> Enum.filter(&TzWorld.contains?(&1.properties.bounding_box, point))
         |> Enum.filter(&TzWorld.contains?(&1, point))
-        |> case do
-          %Geo.MultiPolygon{properties: %{tzid: tzid}} -> {:ok, tzid}
-          %Geo.Polygon{properties: %{tzid: tzid}} -> {:ok, tzid}
-          nil -> {:error, :time_zone_not_found}
-        end
+        |> Enum.map(&(&1.properties.tzid))
+        |> wrap(:ok)
       end
 
     {:reply, timezone, state}
+  end
+
+  defp wrap(term, atom) do
+    {atom, term}
   end
 end

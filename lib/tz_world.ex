@@ -104,9 +104,6 @@ defmodule TzWorld do
     backend.timezone_at(point)
   end
 
-  @spec timezone_at(Geo.Point.t(), backend) ::
-    {:ok, String.t()} | {:error, atom}
-
   @doc """
   Returns all timezone name found for the given
   coordinates specified as either a `Geo.Point`,
