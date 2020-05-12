@@ -30,6 +30,11 @@ defmodule TzWorld.Backend.EtsWithIndexCache do
     GenServer.call(__MODULE__, {:timezone_at, point}, @timeout)
   end
 
+  @spec all_timezones_at(Geo.Point.t()) :: {:ok, [String.t()]} | {:error, atom}
+  def all_timezones_at(%Point{} = point) do
+    GenServer.call(__MODULE__, {:all_timezones_at, point}, @timeout)
+  end
+
   @spec reload_timezone_data :: {:ok, term}
   def reload_timezone_data do
     GenServer.call(__MODULE__, :reload_data, @timeout)
@@ -55,6 +60,11 @@ defmodule TzWorld.Backend.EtsWithIndexCache do
   end
 
   @doc false
+  def handle_call({:all_timezones_at, %Geo.Point{} = point}, _from, state) do
+    {:reply, find_zones(point, state), state}
+  end
+
+  @doc false
   def handle_call(:version, _from, state) do
     [{_, version}] = :ets.lookup(__MODULE__, @tz_world_version)
     {:reply, version, state}
@@ -74,6 +84,18 @@ defmodule TzWorld.Backend.EtsWithIndexCache do
       %Geo.Polygon{properties: %{tzid: tzid}} -> {:ok, tzid}
       nil -> {:error, :time_zone_not_found}
     end
+  end
+
+  defp find_zones(%Geo.Point{} = point, state) do
+    point
+    |> select_candidates(state)
+    |> Enum.filter(&TzWorld.contains?(&1, point))
+    |> Enum.map(&(&1.properties.tzid))
+    |> wrap(:ok)
+  end
+
+  defp wrap(term, atom) do
+    {atom, term}
   end
 
   defp select_candidates(%{coordinates: {lng, lat}}, state) do

@@ -4,6 +4,7 @@ defmodule TzWorld.GeoData do
   @compressed_data_file "timezones-geodata.etf.zip"
   @etf_data_file "timezones-geodata.etf"
   @default_data_dir "./priv"
+  @osm_srid 3857
 
   defdelegate version, to: TzWorld
 
@@ -55,7 +56,7 @@ defmodule TzWorld.GeoData do
       end)
       |> Map.new()
 
-    %{poly | properties: properties, srid: 3857}
+    %{poly | properties: properties, srid: @osm_srid}
   end
 
   defp calculate_bounding_box(
@@ -69,6 +70,7 @@ defmodule TzWorld.GeoData do
   defp calculate_bounding_box(
          %Geo.MultiPolygon{coordinates: polygons, properties: properties} = poly
        ) do
+
     bounding_boxes = Enum.map(polygons, &calculate_bounding_box/1)
     properties = Map.put(properties, :bounding_box, bounding_boxes)
 
@@ -92,6 +94,6 @@ defmodule TzWorld.GeoData do
       end)
 
     bounding_box = [{x_min, y_max}, {x_min, y_min}, {x_max, y_min}, {x_max, y_max}]
-    %Geo.Polygon{coordinates: [bounding_box], srid: 3857}
+    %Geo.Polygon{coordinates: [bounding_box], srid: @osm_srid}
   end
 end

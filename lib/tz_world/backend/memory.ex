@@ -26,6 +26,11 @@ defmodule TzWorld.Backend.Memory do
     GenServer.call(__MODULE__, {:timezone_at, point}, @timeout)
   end
 
+  @spec all_timezones_at(Geo.Point.t()) :: {:ok, [String.t()]} | {:error, atom}
+  def all_timezones_at(%Point{} = point) do
+    GenServer.call(__MODULE__, {:all_timezones_at, point}, @timeout)
+  end
+
   @spec reload_timezone_data :: {:ok, term}
   def reload_timezone_data do
     GenServer.call(__MODULE__, :reload_data, @timeout)
@@ -57,6 +62,22 @@ defmodule TzWorld.Backend.Memory do
         tz_data
         |> Enum.filter(&TzWorld.contains?(&1.properties.bounding_box, point))
         |> Enum.find(&TzWorld.contains?(&1, point))
+        |> case do
+          %Geo.MultiPolygon{properties: %{tzid: tzid}} -> {:ok, tzid}
+          %Geo.Polygon{properties: %{tzid: tzid}} -> {:ok, tzid}
+          nil -> {:error, :time_zone_not_found}
+        end
+      end
+
+    {:reply, timezone, state}
+  end
+
+  def handle_call({:all_timezones_at, %Geo.Point{} = point}, _from, state) do
+    timezone =
+      with {:ok, [_version | tz_data]} <- state do
+        tz_data
+        |> Enum.filter(&TzWorld.contains?(&1.properties.bounding_box, point))
+        |> Enum.filter(&TzWorld.contains?(&1, point))
         |> case do
           %Geo.MultiPolygon{properties: %{tzid: tzid}} -> {:ok, tzid}
           %Geo.Polygon{properties: %{tzid: tzid}} -> {:ok, tzid}
