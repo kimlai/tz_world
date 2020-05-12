@@ -55,8 +55,6 @@ defmodule TzWorld.Downloader do
         {latest_release, asset_url} = latest_release()
         get_and_load_latest_release(latest_release, asset_url)
 
-      other ->
-        other
     end
   end
 

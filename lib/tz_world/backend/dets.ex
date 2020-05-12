@@ -15,24 +15,29 @@ defmodule TzWorld.Backend.Dets do
     GenServer.start_link(__MODULE__, options, name: __MODULE__)
   end
 
+  @doc false
   def init(_state) do
     {:ok, [], {:continue, :open_dets_file}}
   end
 
+  @doc false
   def version do
     GenServer.call(__MODULE__, :version, @timeout)
   end
 
+  @doc false
   @spec timezone_at(Geo.Point.t()) :: {:ok, String.t()} | {:error, atom}
   def timezone_at(%Point{} = point) do
     GenServer.call(__MODULE__, {:timezone_at, point}, @timeout)
   end
 
+  @doc false
   @spec all_timezones_at(Geo.Point.t()) :: {:ok, [String.t()]} | {:error, atom}
   def all_timezones_at(%Point{} = point) do
     GenServer.call(__MODULE__, {:all_timezones_at, point}, @timeout)
   end
 
+  @doc false
   @spec reload_timezone_data :: {:ok, term}
   def reload_timezone_data do
     GenServer.call(__MODULE__, :reload_data, @timeout * 3)
@@ -40,18 +45,22 @@ defmodule TzWorld.Backend.Dets do
 
   @slots 1_000
 
+  @doc false
   def filename do
     :code.priv_dir(:tz_world) ++ '/timezones-geodata.dets'
   end
 
+  @doc false
   def dets_options do
     [file: filename(), estimated_no_objects: @slots]
   end
 
+  @doc false
   def get_geodata_table do
     :dets.open_file(__MODULE__, dets_options())
   end
 
+  @doc false
   def save_dets_geodata do
     {:ok, __MODULE__} = :dets.open_file(__MODULE__, dets_options())
     :ok = :dets.delete_all_objects(__MODULE__)
@@ -101,7 +110,7 @@ defmodule TzWorld.Backend.Dets do
   @doc false
   def handle_call(:version, _from, state) do
     [{_, version}] = :dets.lookup(__MODULE__, @tz_world_version)
-    {:reply, version, state}
+    {:reply, {:ok, version}, state}
   end
 
   @doc false

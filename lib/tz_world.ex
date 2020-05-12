@@ -8,10 +8,6 @@ defmodule TzWorld do
 
   @type backend :: module()
 
-  def version do
-    fetch_backend().version()
-  end
-
   @reload_backends [
     TzWorld.Backend.Memory,
     TzWorld.Backend.Dets,
@@ -19,6 +15,22 @@ defmodule TzWorld do
     TzWorld.Backend.Ets,
     TzWorld.Backend.EtsWithIndexCache,
   ]
+
+
+  @doc """
+  Returns the installed version of time
+  zone data
+
+  ## Example
+
+      iex> TzWorld.version
+      {:ok, "2020a"}
+
+  """
+  @spec version :: {:ok, String.t()} | {:error, :enoent}
+  def version do
+    fetch_backend().version()
+  end
 
   @doc """
   Reload the timezone geometry data.
