@@ -1,6 +1,6 @@
 # Changelog for Tz_World v0.5.0
 
-This is the changelog for Tz_World v0.5.0 released on ______, 2020.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
+This is the changelog for Tz_World v0.5.0 released on May 23rd, 2020.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
 
 * Adds configurable backends. Each backend is a GenServer that must be added to an applications supervision tree or started manually.
 
