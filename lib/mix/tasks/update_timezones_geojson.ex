@@ -10,6 +10,9 @@ defmodule Mix.Tasks.TzWorld.Update do
 
   def run(_args) do
     Application.ensure_all_started(:tz_world)
+    Application.ensure_all_started(:inets)
+    Application.ensure_all_started(:ssl)
+
     TzWorld.Backend.Memory.start_link
     TzWorld.Backend.Dets.start_link
 

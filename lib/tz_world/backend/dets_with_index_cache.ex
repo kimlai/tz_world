@@ -50,7 +50,7 @@ defmodule TzWorld.Backend.DetsWithIndexCache do
 
   @slots 800
   defp dets_options do
-    [file: filename(), estimated_no_objects: @slots]
+    [file: filename(), access: :read, estimated_no_objects: @slots]
   end
 
   @doc false
@@ -60,7 +60,9 @@ defmodule TzWorld.Backend.DetsWithIndexCache do
 
   @doc false
   def save_dets_geodata do
-    {:ok, t} = :dets.open_file(__MODULE__, dets_options())
+    dets_options = Keyword.put(dets_options(), :access, :read_write)
+
+    {:ok, t} = :dets.open_file(__MODULE__, dets_options)
     :ok = :dets.delete_all_objects(t)
 
     {:ok, geodata} = TzWorld.GeoData.load_compressed_data()

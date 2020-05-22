@@ -16,6 +16,13 @@ defmodule TzWorld do
     TzWorld.Backend.EtsWithIndexCache,
   ]
 
+  @doc """
+  Returns the OTP app name of :tz_world
+
+  """
+  def app_name do
+    :tz_world
+  end
 
   @doc """
   Returns the installed version of time

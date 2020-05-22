@@ -1,3 +1,23 @@
+# Changelog for Tz_World v0.5.0
+
+This is the changelog for Tz_World v0.5.0 released on ______, 2020.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
+
+* Adds configurable backends. Each backend is a GenServer that must be added to an applications supervision tree or started manually.
+
+### Bug Fixes
+
+* Move compile time configuration of the data directory to runtime and remove hard-coded default path
+
+* Start `:inets` and `:ssl` applications in the downloader mix task
+
+* Add certificate verification when downloading updates to the geo data
+
+### Enhancements
+
+* Document the `:data_dir` and `:cacertfile` configuration options it the README.md file
+
+* The backends `:dets` and `:dets_with_index_cache` now open the `:dets` file as `access: :read` which prevents errors if the file is abnormally closed.
+
 # Changelog for Tz_World v0.4.0
 
 This is the changelog for Tz_World v0.4.0 released on May 12th, 2020.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
