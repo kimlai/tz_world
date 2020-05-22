@@ -3,23 +3,28 @@ defmodule TzWorld.GeoData do
 
   @compressed_data_file "timezones-geodata.etf.zip"
   @etf_data_file "timezones-geodata.etf"
-  @default_data_dir "./priv"
   @osm_srid 3857
 
   defdelegate version, to: TzWorld
 
   def default_data_dir do
-    @default_data_dir
+    TzWorld.app_name()
+    |> :code.priv_dir
+    |> List.to_string
+  end
+
+  def data_dir do
+    Application.get_env(TzWorld.app_name(), :data_dir, default_data_dir())
   end
 
   def compressed_data_path do
-    Application.get_env(:tz_world, :data_dir, default_data_dir())
+    data_dir()
     |> Path.join(@compressed_data_file)
     |> to_charlist
   end
 
   def etf_data_path do
-    Application.get_env(:tz_world, :data_dir, default_data_dir())
+    data_dir()
     |> Path.join(@etf_data_file)
     |> to_charlist
   end

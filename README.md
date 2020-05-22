@@ -18,9 +18,23 @@ After adding `TzWorld` as a dependency, run `mix deps.get` to install it. Then r
 
 **NOTE** No data is installed with the package and until the data is installed with `mix tz_world.update` all calls to `TzWorld.timezone_at/1` will return `{:error, :time_zone_not_found}`.
 
+### Configuration
+
+There is no mandatory configuration required however two options may be configured in `config.exs`:
+
+```elixir
+config :tz_world,
+	data_dir: "geodata/directory",        # The default is the `priv` directory of `:tz_world`
+	cacertfile: "path/to/ca_trust_store"  # The defaul is either the trust store included in the
+									                      # libraries `CAStore` or `certifi` or the platform
+																				# trust store.
+```
+
 ## Backend selection
 
 `TzWorld` provides alternative strategies for managing access to the backend data. Each backend is implemented as a `GenServer` that needs to be either manually started with `BackendModule.start_link/1` or preferably added to your application's supervision tree.
+
+The recommended backend is `TzWorld.Backend.EtsWithIndexCache`.
 
 For example:
 ```elixir
@@ -42,7 +56,7 @@ end
 ```
 The following backends are available:
 
-* `TzWorld.Backend.Memory` which retains all data in memory for fastest performance at the expense of using approximately 1Gb of memory
+* `TzWorld.Backend.Memory` which retains all data in memory for fast (but *not* fastest) performance at the expense of using approximately 1Gb of memory
 * `TzWorld.Backend.Dets` which uses Erlang's `:dets` data store. This uses negligible memory at the expense of slow access times (approximaltey 500ms in testing)
 * `TzWorld.Backend.DetsWithIndexCache` which balances memory usage and performance. This backend is recommended in most situations since its performance is similar to `TzWorld.Backend.Memory` (about 5% slower in testing) and uses about 25Mb of memory
 * `TzWorld.Backend.Ets` which uses `:ets` for storage. With the default settings of `:compressed` for the `:ets` table its memory consumption is about 512Mb  but with access that is over 20 times slower than `TzWorld.Backend.DetsWithIndexCache`

@@ -1,7 +1,7 @@
 defmodule TzWorld.Mixfile do
   use Mix.Project
 
-  @version "0.4.0"
+  @version "0.5.0"
 
   def project do
     [
@@ -33,6 +33,8 @@ defmodule TzWorld.Mixfile do
     [
       {:geo, "~> 1.0 or ~> 2.0 or ~> 3.0"},
       {:jason, "~> 1.0"},
+      {:castore, "~> 0.1", optional: true},
+      {:certifi, "~> 2.5", optional: true},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false},
       {:dialyxir, "~> 1.0.0-rc", only: :dev, runtime: false, optional: true},
       {:benchee, "~> 1.0", only: :dev, runtime: false}

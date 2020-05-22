@@ -1,3 +1,21 @@
+# Changelog for Tz_World v0.5.0
+
+This is the changelog for Tz_World v0.5.0 released on May 23rd, 2020.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
+
+### Bug Fixes
+
+* Move compile time configuration of the data directory to runtime and remove hard-coded default path
+
+* Start `:inets` and `:ssl` applications in the downloader mix task
+
+* Add certificate verification when downloading updates to the geo data
+
+### Enhancements
+
+* Document the `:data_dir` and `:cacertfile` configuration options it the README.md file
+
+* The backends `:dets` and `:dets_with_index_cache` now open the `:dets` file as `access: :read` which prevents errors if the file is abnormally closed.
+
 # Changelog for Tz_World v0.4.0
 
 This is the changelog for Tz_World v0.4.0 released on May 12th, 2020.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
@@ -10,7 +28,7 @@ This is the changelog for Tz_World v0.4.0 released on May 12th, 2020.  For older
 
 ### Configurable backends
 
-* `TzWorld.Backend.Memory` which retains all data in memory for fastest performance at the expense of using approximately 1Gb of memory
+* `TzWorld.Backend.Memory` which retains all data in memory for fast (but *not* fastest) performance at the expense of using approximately 1Gb of memory
 * `TzWorld.Backend.Dets` which uses Erlang's `:dets` data store. This uses negligible memory at the expense of slow access times (approximaltey 500ms in testing)
 * `TzWorld.Backend.DetsWithIndexCache` which balances memory usage and performance. This backend is recommended in most situations since its performance is similar to `TzWorld.Backend.Memory` (about 5% slower in testing) and uses about 25Mb of memory
 * `TzWorld.Backend.Ets` which uses `:ets` for storage. With the default settings of `:compressed` for the `:ets` table its memory consumption is about 512Mb but with access that is over 20 times slower than `TzWorld.Backend.DetsWithIndexCache`
@@ -18,11 +36,11 @@ This is the changelog for Tz_World v0.4.0 released on May 12th, 2020.  For older
 
 ### Enhancements
 
-* Add `TzWorld.all_timezones_at/2` to return all timezones for a given location.  In rare cases, usually disputed territory, multiple timezones may be declared for a overlapping regions. `TzWorld.all_timezones_at/2` returns a (potentially empty) list of all time zones knowns for a given point.  *Futher testing of this function is required and will be completed before version 1.0*.
+* Add `TzWorld.all_timezones_at/2` to return all timezones for a given location.  In rare cases, usually disputed territory, multiple timezones may be declared for overlapping regions. `TzWorld.all_timezones_at/2` returns a (potentially empty) list of all time zones known for a given point.  *Futher testing of this function is required and will be completed before version 1.0*.
 
 # Changelog for Tz_World v0.3.0
 
-This is the changelog for Tz_World v0.3.0 released on February 16th, 2020.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
+This is the changelog for Tz_World v0.3.0 released on December 4th, 2019.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
 
 ### Breaking Changes
 
