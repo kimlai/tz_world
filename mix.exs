@@ -11,6 +11,7 @@ defmodule TzWorld.Mixfile do
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      aliases: aliases(),
       docs: docs(),
       source_url: "https://github.com/kimlai/tz_world",
       description: description(),
@@ -31,12 +32,12 @@ defmodule TzWorld.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:geo, "~> 1.0 or ~> 2.0 or ~> 3.0"},
+      {:geo, "~> 1.0 or ~> 2.0 or ~> 3.3"},
       {:jason, "~> 1.0"},
       {:castore, "~> 0.1", optional: true},
       {:certifi, "~> 2.5", optional: true},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false},
-      {:dialyxir, "~> 1.0.0-rc", only: :dev, runtime: false, optional: true},
+      {:dialyxir, "~> 1.0", only: :dev, runtime: false, optional: true},
       {:benchee, "~> 1.0", only: :dev, runtime: false}
     ]
   end
@@ -59,6 +60,17 @@ defmodule TzWorld.Mixfile do
         "README*",
         "CHANGELOG*",
         "LICENSE*"
+      ]
+    ]
+  end
+
+  @priv "priv"
+
+  def aliases do
+    [
+      "compile.app": [
+        fn _ -> File.mkdir_p!(@priv) end,
+        "compile.app"
       ]
     ]
   end
