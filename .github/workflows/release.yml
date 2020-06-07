@@ -1,33 +1,31 @@
 name: Release
 
- on:
+on:
    release:
      types:
        - created
 
- jobs:
-   build:
-
-     runs-on: ubuntu-latest
-
-     steps:
-     - uses: actions/checkout@v2
-     - name: Setup elixir
-       uses: actions/setup-elixir@v1
-       with:
-         elixir-version: '1.10.3' # Define the elixir version [required]
-         otp-version: '23.0' # Define the OTP version [required]
-     - name: Install Dependencies
-       run: mix deps.get
-     - name: Download and process shape data
-       run: mix tz_world.update
-     - name: Upload Geodata to release
-       uses: actions/upload-release-asset@v1.0.1
-       env:
-         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-       with:
-         upload_url: ${{ github.event.release.upload_url }}
-         asset_path: ./priv/timezones-geodata.etf.zip
-         asset_content_type: binary/octet-stream
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup elixir
+      uses: actions/setup-elixir@v1
+      with:
+        elixir-version: '1.10.3' # Define the elixir version [required]
+        otp-version: '23.0' # Define the OTP version [required]
+    - name: Install Dependencies
+      run: mix deps.get
+    - name: Download and process shape data
+      run: mix tz_world.update
+    - name: Upload Geodata to release
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./priv/timezones-geodata.etf.zip
+        asset_content_type: binary/octet-stream
        
        
