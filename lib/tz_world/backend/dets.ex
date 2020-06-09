@@ -47,9 +47,10 @@ defmodule TzWorld.Backend.Dets do
 
   @doc false
   def filename do
-    TzWorld.data_dir ++ '/timezones-geodata.dets'
+    TzWorld.GeoData.data_dir()
+    |> Path.join("timezones-geodata.dets")
+    |> String.to_charlist()
   end
-
   @doc false
   defp dets_options do
     [file: filename(), access: :read, estimated_no_objects: @slots]
