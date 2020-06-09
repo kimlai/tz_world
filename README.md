@@ -9,7 +9,7 @@ Add `tz_world` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:tz_world, "~> 0.4.0"}
+    {:tz_world, "~> 0.5.0"}
   ]
 end
 ```
