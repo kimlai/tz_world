@@ -247,11 +247,4 @@ defmodule TzWorld do
       )
   end
 
-  # Returns the data directory for timezone data
-  @doc false
-  def data_dir do
-    Application.get_env(:tz_world, :data_dir, List.to_string(:code.priv_dir(:tz_world)))
-    |> String.to_charlist
-  end
-
 end
