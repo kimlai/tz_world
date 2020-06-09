@@ -26,6 +26,7 @@ jobs:
       with:
         upload_url: ${{ github.event.release.upload_url }}
         asset_path: ./priv/timezones-geodata.etf.zip
+        asset_name: timezones-geodata.etf.zip
         asset_content_type: binary/octet-stream
        
        
