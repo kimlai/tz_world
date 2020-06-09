@@ -94,32 +94,50 @@ defmodule TzWorld.Backend.DetsWithIndexCache do
 
   @doc false
   def handle_continue(:open_dets_file, _state) do
-    {:ok, __MODULE__} = get_geodata_table()
-    {:noreply, get_index_cache()}
+    case get_geodata_table() do
+     {:error, {:file_error, _, :enoent}} ->
+       {:noreply, {:error, :enoent}}
+     {:ok, __MODULE__} ->
+       {:noreply, get_index_cache()}
+    end
   end
 
   @doc false
+  def handle_call({:timezone_at, _}, _from, {:error, :enoent} = state) do
+    {:reply, state, state}
+  end
+
   def handle_call({:timezone_at, %Geo.Point{} = point}, _from, state) do
     {:reply, find_zone(point, state), state}
   end
 
-  @doc false
+  def handle_call({:all_timezones_at, _point}, _from, {:error, :enoent} = state) do
+    {:reply, state, state}
+  end
+
   def handle_call({:all_timezones_at, %Geo.Point{} = point}, _from, state) do
     {:reply, find_zones(point, state), state}
   end
 
-  @doc false
+  def handle_call(:version, _from, {:error, :enoent} = state) do
+    {:reply, state, state}
+  end
+
   def handle_call(:version, _from, state) do
     [{_, version}] = :dets.lookup(__MODULE__, @tz_world_version)
     {:reply, {:ok, version}, state}
   end
 
   @doc false
+  def handle_call(:reload_data, _from, {:error, :enoent}) do
+    :ok = save_dets_geodata()
+    {:reply, get_geodata_table(), get_index_cache()}
+  end
+
   def handle_call(:reload_data, _from, _state) do
     :dets.close(__MODULE__)
     :ok = save_dets_geodata()
-    {:ok, __MODULE__} = get_geodata_table()
-    {:reply, {:ok, get_geodata_table()}, get_index_cache()}
+    {:reply, get_geodata_table(), get_index_cache()}
   end
 
   @doc false

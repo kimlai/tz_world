@@ -1,3 +1,13 @@
+# Changelog for Tz_World v0.6.0
+
+This is the changelog for Tz_World v0.6.0 released on June 10th, 2020.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
+
+### Bug Fixes
+
+* Honour the configuration for `:data_dir`. Thanks to @superhawk610. Fixes #12
+
+* Be more resilient if the `:dets` file is not in place
+
 # Changelog for Tz_World v0.5.0
 
 This is the changelog for Tz_World v0.5.0 released on May 23rd, 2020.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)

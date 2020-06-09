@@ -47,12 +47,12 @@ defmodule TzWorld.Backend.Dets do
 
   @doc false
   def filename do
-    :code.priv_dir(:tz_world) ++ '/timezones-geodata.dets'
+    TzWorld.data_dir ++ '/timezones-geodata.dets'
   end
 
   @doc false
-  def dets_options do
-    [file: filename(), estimated_no_objects: @slots]
+  defp dets_options do
+    [file: filename(), access: :read, estimated_no_objects: @slots]
   end
 
   @doc false
@@ -62,7 +62,9 @@ defmodule TzWorld.Backend.Dets do
 
   @doc false
   def save_dets_geodata do
-    {:ok, __MODULE__} = :dets.open_file(__MODULE__, dets_options())
+    dets_options = Keyword.put(dets_options(), :access, :read_write)
+
+    {:ok, __MODULE__} = :dets.open_file(__MODULE__, dets_options)
     :ok = :dets.delete_all_objects(__MODULE__)
 
     {:ok, geodata} = TzWorld.GeoData.load_compressed_data()
@@ -98,26 +100,43 @@ defmodule TzWorld.Backend.Dets do
   end
 
   @doc false
+  def handle_call({:timezone_at, _}, _from, {:error, :enoent} = state) do
+    {:reply, state, state}
+  end
+
   def handle_call({:timezone_at, %Geo.Point{} = point}, _from, state) do
     {:reply, find_zone(point), state}
   end
 
   @doc false
+  def handle_call({:all_timezones_at, _point}, _from, {:error, :enoent} = state) do
+    {:reply, state, state}
+  end
+
   def handle_call({:all_timezones_at, %Geo.Point{} = point}, _from, state) do
     {:reply, find_zones(point), state}
   end
 
   @doc false
+  def handle_call(:version, _from, {:error, :enoent} = state) do
+    {:reply, state, state}
+  end
+
   def handle_call(:version, _from, state) do
     [{_, version}] = :dets.lookup(__MODULE__, @tz_world_version)
     {:reply, {:ok, version}, state}
   end
 
   @doc false
-  def handle_call(:reload_data, _from, state) do
+  def handle_call(:reload_data, _from, {:error, :enoent}) do
+    :ok = save_dets_geodata()
+    {:reply, get_geodata_table(), get_geodata_table()}
+  end
+
+  def handle_call(:reload_data, _from, _state) do
     :dets.close(__MODULE__)
     :ok = save_dets_geodata()
-    {:reply, {:ok, get_geodata_table()}, state}
+    {:reply, get_geodata_table(), get_geodata_table()}
   end
 
   @doc false
