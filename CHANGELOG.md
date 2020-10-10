@@ -1,3 +1,11 @@
+# Changelog for Tz_World v0.7.0
+
+This is the changelog for Tz_World v0.7.0 released on October 10th, 2020.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
+
+### Bug Fixes
+
+* Add `:inets` and `:public_key` to `:extra_applications` in `mix.exs` to make Elixir 1.11 happy.
+
 # Changelog for Tz_World v0.6.0
 
 This is the changelog for Tz_World v0.6.0 released on June 10th, 2020.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
