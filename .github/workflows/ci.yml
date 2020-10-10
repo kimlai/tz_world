@@ -24,4 +24,3 @@ jobs:
       run: mix tz_world.update
     - name: Run Tests
       run: mix test
-      

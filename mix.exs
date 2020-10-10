@@ -1,7 +1,7 @@
 defmodule TzWorld.Mixfile do
   use Mix.Project
 
-  @version "0.6.0"
+  @version "0.7.0"
 
   def project do
     [
@@ -25,7 +25,7 @@ defmodule TzWorld.Mixfile do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger, :public_key, :inets]
     ]
   end
 
