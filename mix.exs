@@ -1,6 +1,7 @@
 defmodule TzWorld.Mixfile do
   use Mix.Project
 
+  @source_url "https://github.com/kimlai/tz_world"
   @version "0.7.0"
 
   def project do
@@ -13,7 +14,7 @@ defmodule TzWorld.Mixfile do
       deps: deps(),
       aliases: aliases(),
       docs: docs(),
-      source_url: "https://github.com/kimlai/tz_world",
+      source_url: @source_url,
       description: description(),
       package: package(),
       dialyzer: [
@@ -22,14 +23,12 @@ defmodule TzWorld.Mixfile do
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
   def application do
     [
       extra_applications: [:logger, :public_key, :inets]
     ]
   end
 
-  # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
       {:geo, "~> 1.0 or ~> 2.0 or ~> 3.3"},
@@ -77,9 +76,9 @@ defmodule TzWorld.Mixfile do
 
   def links do
     %{
-      "GitHub" => "https://github.com/kimlai/tz_world",
-      "Readme" => "https://github.com/kimlai/tz_world/blob/v#{@version}/README.md",
-      "Changelog" => "https://github.com/kimlai/tz_world/blob/v#{@version}/CHANGELOG.md"
+      "GitHub" => @source_url,
+      "Readme" => "#{@source_url}/blob/v#{@version}/README.md",
+      "Changelog" => "#{@source_url}/blob/v#{@version}/CHANGELOG.md"
     }
   end
 
