@@ -33,6 +33,11 @@ defmodule TzWorldTest do
                {:ok, "Asia/Singapore"}
     end
 
+    test "an Russian timezone with known issue in other libraries with backend #{backend}" do
+      assert TzWorld.timezone_at(%Geo.Point{coordinates: {85.95926, 51.95874}}, unquote(backend)) ==
+               {:ok, "Asia/Barnaul"}
+    end
+
     test "a western lon, northern lat with GeoPointZ with backend #{backend}" do
       assert TzWorld.timezone_at(
                %Geo.PointZ{coordinates: {-74.006, 40.7128, 0.0}},
