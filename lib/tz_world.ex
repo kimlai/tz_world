@@ -30,8 +30,8 @@ defmodule TzWorld do
 
   ## Example
 
-      iex> TzWorld.version
-      {:ok, "2020a"}
+      TzWorld.version
+      => {:ok, "2020d"}
 
   """
   @spec version :: {:ok, String.t()} | {:error, :enoent}
