@@ -14,10 +14,6 @@ defmodule TzWorldTest do
   end
 
   for backend <- @backends do
-    test "getting version for #{backend}" do
-      assert unquote(backend).version == {:ok, "2020a"}
-    end
-
     test "a known lookup with backend #{backend}" do
       assert TzWorld.timezone_at(%Geo.Point{coordinates: {3.2, 45.32}}, unquote(backend)) ==
                {:ok, "Europe/Paris"}
@@ -31,6 +27,11 @@ defmodule TzWorldTest do
     test "an eastern lon, northern lat with backend #{backend}" do
       assert TzWorld.timezone_at(%Geo.Point{coordinates: {103.8198, 1.3521}}, unquote(backend)) ==
                {:ok, "Asia/Singapore"}
+    end
+
+    test "an Russian timezone with known issue in other libraries with backend #{backend}" do
+      assert TzWorld.timezone_at(%Geo.Point{coordinates: {85.95926, 51.95874}}, unquote(backend)) ==
+               {:ok, "Asia/Barnaul"}
     end
 
     test "a western lon, northern lat with GeoPointZ with backend #{backend}" do

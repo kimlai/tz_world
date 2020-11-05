@@ -1,3 +1,11 @@
+# Changelog for Tz_World v0.7.1
+
+This is the changelog for Tz_World v0.7.1 released on November 6th, 2020.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
+
+### Bug Fixes
+
+* Don't use tests for the external data version since that changes outside of the code lifesycle
+
 # Changelog for Tz_World v0.7.0
 
 This is the changelog for Tz_World v0.7.0 released on October 10th, 2020.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
