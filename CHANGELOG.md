@@ -1,3 +1,11 @@
+# Changelog for Tz_World v1.0.0
+
+This is the changelog for Tz_World v1.0.0 released on October 19th, 2021.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
+
+### Enhancements
+
+* Update to version 1.0.0 since the API has been stable for a year.
+
 # Changelog for Tz_World v0.7.1
 
 This is the changelog for Tz_World v0.7.1 released on November 6th, 2020.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
