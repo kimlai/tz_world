@@ -11,10 +11,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Setup elixir
-      uses: actions/setup-elixir@v1
+      uses: erlef/setup-elixir@v1
       with:
-        elixir-version: '1.10.3' # Define the elixir version [required]
-        otp-version: '23.0' # Define the OTP version [required]
+        elixir-version: '1.12.3'
+        otp-version: '24.1'
     - name: Install Dependencies
       run: mix deps.get
     - name: Download and process shape data
