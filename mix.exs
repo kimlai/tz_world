@@ -2,7 +2,7 @@ defmodule TzWorld.Mixfile do
   use Mix.Project
 
   @source_url "https://github.com/kimlai/tz_world"
-  @version "0.7.1"
+  @version "1.0.0"
 
   def project do
     [
@@ -43,7 +43,7 @@ defmodule TzWorld.Mixfile do
 
   defp description do
     """
-    Resolve timezone names from a location.
+    Resolve time zone names from a location.
     """
   end
 
