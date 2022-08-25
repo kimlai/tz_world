@@ -125,7 +125,7 @@ defmodule TzWorld.Downloader do
 
   @certificate_locations [
       # Configured cacertfile
-      Application.get_env(TzWorld.app_name(), :cacertfile),
+      Application.compile_env(:tz_world, :cacertfile),
 
       # Populated if hex package CAStore is configured
       if(Code.ensure_loaded?(CAStore), do: CAStore.file_path()),

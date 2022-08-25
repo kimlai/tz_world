@@ -1,4 +1,14 @@
-# Changelog for Tz_World v1.0.0
+## Changelog for Tz_World
+
+## Tz_World v1.1.0
+
+This is the changelog for Tz_World v1.1.0 released on August 26th, 2022.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
+
+### Enhancements
+
+* Replace `Application.get_env/2` with `Application.compile_env/2` to remove warnings on Elixir 1.14. Now requires Elixir 1.10 as a minimum version.
+
+## Tz_World v1.0.0
 
 This is the changelog for Tz_World v1.0.0 released on October 19th, 2021.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
 
@@ -6,7 +16,7 @@ This is the changelog for Tz_World v1.0.0 released on October 19th, 2021.  For o
 
 * Update to version 1.0.0 since the API has been stable for a year.
 
-# Changelog for Tz_World v0.7.1
+## Tz_World v0.7.1
 
 This is the changelog for Tz_World v0.7.1 released on November 6th, 2020.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
 
@@ -14,7 +24,7 @@ This is the changelog for Tz_World v0.7.1 released on November 6th, 2020.  For o
 
 * Don't use tests for the external data version since that changes outside of the code lifesycle
 
-# Changelog for Tz_World v0.7.0
+## Tz_World v0.7.0
 
 This is the changelog for Tz_World v0.7.0 released on October 10th, 2020.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
 
@@ -22,7 +32,7 @@ This is the changelog for Tz_World v0.7.0 released on October 10th, 2020.  For o
 
 * Add `:inets` and `:public_key` to `:extra_applications` in `mix.exs` to make Elixir 1.11 happy.
 
-# Changelog for Tz_World v0.6.0
+## Tz_World v0.6.0
 
 This is the changelog for Tz_World v0.6.0 released on June 10th, 2020.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
 
@@ -32,7 +42,7 @@ This is the changelog for Tz_World v0.6.0 released on June 10th, 2020.  For olde
 
 * Be more resilient if the `:dets` file is not in place
 
-# Changelog for Tz_World v0.5.0
+## Tz_World v0.5.0
 
 This is the changelog for Tz_World v0.5.0 released on May 23rd, 2020.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
 
@@ -50,7 +60,7 @@ This is the changelog for Tz_World v0.5.0 released on May 23rd, 2020.  For older
 
 * The backends `:dets` and `:dets_with_index_cache` now open the `:dets` file as `access: :read` which prevents errors if the file is abnormally closed.
 
-# Changelog for Tz_World v0.4.0
+## Tz_World v0.4.0
 
 This is the changelog for Tz_World v0.4.0 released on May 12th, 2020.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
 
@@ -72,7 +82,7 @@ This is the changelog for Tz_World v0.4.0 released on May 12th, 2020.  For older
 
 * Add `TzWorld.all_timezones_at/2` to return all timezones for a given location.  In rare cases, usually disputed territory, multiple timezones may be declared for overlapping regions. `TzWorld.all_timezones_at/2` returns a (potentially empty) list of all time zones known for a given point.  *Futher testing of this function is required and will be completed before version 1.0*.
 
-# Changelog for Tz_World v0.3.0
+## Tz_World v0.3.0
 
 This is the changelog for Tz_World v0.3.0 released on December 4th, 2019.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
 
@@ -84,7 +94,7 @@ This is the changelog for Tz_World v0.3.0 released on December 4th, 2019.  For o
 
 * Allows both `%Geo.Point{}` and `%Geo.PointZ{}` as parameters to `TzWorld.timezone_at/1`
 
-# Changelog for Tz_World v0.2.0
+## Tz_World v0.2.0
 
 This is the changelog for Tz_World v0.2.0 released on November 28th, 2019.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
 

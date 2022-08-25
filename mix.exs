@@ -2,14 +2,14 @@ defmodule TzWorld.Mixfile do
   use Mix.Project
 
   @source_url "https://github.com/kimlai/tz_world"
-  @version "1.0.0"
+  @version "1.1.0"
 
   def project do
     [
       app: :tz_world,
       name: "TzWord",
       version: @version,
-      elixir: "~> 1.6",
+      elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       aliases: aliases(),
