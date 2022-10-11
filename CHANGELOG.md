@@ -1,5 +1,13 @@
 ## Changelog for Tz_World
 
+## Tz_World v1.1.1
+
+This is the changelog for Tz_World v1.1.1 released on October 12th, 2022.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
+
+### Bug Fixes
+
+* Fix `TzWorld.Backend.Dets` to not raise an exception if there is no timezone data available.
+
 ## Tz_World v1.1.0
 
 This is the changelog for Tz_World v1.1.0 released on August 26th, 2022.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)

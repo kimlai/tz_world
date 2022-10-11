@@ -10,21 +10,26 @@ defmodule TzWorld.Downloader do
 
   @release_url "https://api.github.com/repos/evansiroky/timezone-boundary-builder/releases"
   @timezones_geojson "timezones.geojson.zip"
+  @timezones_with_oceans_geojson "timezones-with-oceans.geojson.zip"
 
   @doc """
   Return the `{release_number, download_url}` of
   the latest timezones geo JSON data
 
   """
-  def latest_release do
+  def latest_release(include_oceans? \\ false) do
     with {:ok, releases} <- get_releases() do
       release = hd(releases)
       release_number = Map.get(release, "name")
-      timezones_geojson_asset = find_asset(release, @timezones_geojson)
+      asset_name = asset_name(include_oceans?)
+      timezones_geojson_asset = find_asset(release, asset_name)
       asset_url = Map.get(timezones_geojson_asset, "browser_download_url")
       {release_number, asset_url}
     end
   end
+
+  defp asset_name(true), do: @timezones_with_oceans_geojson
+  defp asset_name(false), do: @timezones_geojson
 
   @doc """
   Returns the current installed timezones geo JSON

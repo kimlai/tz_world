@@ -97,7 +97,12 @@ defmodule TzWorld.Backend.Dets do
 
   @doc false
   def handle_continue(:open_dets_file, _state) do
-    {:noreply, get_geodata_table()}
+    case get_geodata_table() do
+     {:error, {:file_error, _, :enoent}} ->
+       {:noreply, {:error, :enoent}}
+     {:ok, __MODULE__} ->
+       {:noreply, {:ok, __MODULE__}}
+    end
   end
 
   @doc false
