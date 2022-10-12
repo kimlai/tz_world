@@ -44,11 +44,40 @@ defmodule TzWorld.Downloader do
   Updates the timezone geo JSON data if there
   is a more recent release.
 
+  ## Arguments
+
+  * `options` is a keyword list of options. The
+    default is `[include_oceans: false, force: false]`.
+
+  ## Options
+
+  * `:include_oceans` is a boolean that indicates whether
+    to include time zone data for the world's oceans. The
+    default is `false`.
+
+  * `:force` is a boolean that indicates whether to force
+    an update of the data, even if the current data is the
+    latest release.  This option is useful when switching
+    from the data without oceans to the data with oceans
+    (or the other way arouond).
+
   """
-  def update_release do
+  def update_release(options \\ []) do
+    include_oceans? = Keyword.get(options, :include_oceans, false)
+    force_update? = Keyword.get(options, :force, false)
+
+    update_release(include_oceans?, force_update?)
+  end
+
+  def update_release(include_oceans?, true = _force_update?) do
+    {latest_release, asset_url} = latest_release(include_oceans?)
+    get_and_load_latest_release(latest_release, asset_url)
+  end
+
+  def update_release(include_oceans?, false = _force_update?) do
     case current_release() do
       {:ok, current_release} ->
-        {latest_release, asset_url} = latest_release()
+        {latest_release, asset_url} = latest_release(include_oceans?)
 
         if latest_release > current_release do
           get_and_load_latest_release(latest_release, asset_url)
@@ -57,7 +86,7 @@ defmodule TzWorld.Downloader do
         end
 
       {:error, :enoent} ->
-        {latest_release, asset_url} = latest_release()
+        {latest_release, asset_url} = latest_release(include_oceans?)
         get_and_load_latest_release(latest_release, asset_url)
 
     end
@@ -72,7 +101,6 @@ defmodule TzWorld.Downloader do
   def get_latest_release(latest_release, asset_url) do
     with {:ok, source_data} <- get_url(asset_url) do
       GeoData.generate_compressed_data(source_data, latest_release)
-      TzWorld.Backend.Dets.start_link()
       TzWorld.Backend.Dets.reload_timezone_data()
     end
   end

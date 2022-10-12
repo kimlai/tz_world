@@ -43,56 +43,6 @@ defmodule TzWorld.Backend.Dets do
     GenServer.call(__MODULE__, :reload_data, @timeout * 3)
   end
 
-  @slots 1_000
-
-  @doc false
-  def filename do
-    TzWorld.GeoData.data_dir()
-    |> Path.join("timezones-geodata.dets")
-    |> String.to_charlist()
-  end
-  @doc false
-  defp dets_options do
-    [file: filename(), access: :read, estimated_no_objects: @slots]
-  end
-
-  @doc false
-  def get_geodata_table do
-    :dets.open_file(__MODULE__, dets_options())
-  end
-
-  @doc false
-  def save_dets_geodata do
-    dets_options = Keyword.put(dets_options(), :access, :read_write)
-
-    {:ok, __MODULE__} = :dets.open_file(__MODULE__, dets_options)
-    :ok = :dets.delete_all_objects(__MODULE__)
-
-    {:ok, geodata} = TzWorld.GeoData.load_compressed_data()
-    [version | shapes] = geodata
-
-    for shape <- shapes do
-      add_to_dets(__MODULE__, shape)
-    end
-
-    :ok = :dets.insert(__MODULE__, {@tz_world_version, version})
-    :dets.close(__MODULE__)
-  end
-
-  defp add_to_dets(t, shape) do
-    case shape.properties.bounding_box do
-      %Geo.Polygon{} = box ->
-        [[{x_min, y_max}, {_, y_min}, {x_max, _}, _]] = box.coordinates
-        :dets.insert(t, {{x_min, x_max, y_min, y_max}, shape})
-
-      polygons when is_list(polygons) ->
-        for box <- polygons do
-          [[{x_min, y_max}, {_, y_min}, {x_max, _}, _]] = box.coordinates
-          :dets.insert(t, {{x_min, x_max, y_min, y_max}, shape})
-        end
-    end
-  end
-
   # --- Server callback implementation
 
   @doc false
@@ -100,6 +50,8 @@ defmodule TzWorld.Backend.Dets do
     case get_geodata_table() do
      {:error, {:file_error, _, :enoent}} ->
        {:noreply, {:error, :enoent}}
+     {:error, {:not_closed, _path}} ->
+       raise "NOT CLOSED"
      {:ok, __MODULE__} ->
        {:noreply, {:ok, __MODULE__}}
     end
@@ -145,6 +97,8 @@ defmodule TzWorld.Backend.Dets do
     {:reply, get_geodata_table(), get_geodata_table()}
   end
 
+  # --- Helpers
+
   @doc false
   defp find_zones(%Geo.Point{} = point) do
     point
@@ -187,4 +141,56 @@ defmodule TzWorld.Backend.Dets do
       }
     ]
   end
+
+  @doc false
+  def filename do
+    TzWorld.GeoData.data_dir()
+    |> Path.join("timezones-geodata.dets")
+    |> String.to_charlist()
+  end
+
+  @doc false
+  def save_dets_geodata do
+    dets_options = Keyword.put(dets_options(), :access, :read_write)
+
+    {:ok, __MODULE__} = :dets.open_file(__MODULE__, dets_options)
+    :ok = :dets.delete_all_objects(__MODULE__)
+
+    {:ok, geodata} = TzWorld.GeoData.load_compressed_data()
+    [version | shapes] = geodata
+
+    for shape <- shapes do
+      add_to_dets(__MODULE__, shape)
+    end
+
+    :ok = :dets.insert(__MODULE__, {@tz_world_version, version})
+    :dets.close(__MODULE__)
+  end
+
+  defp add_to_dets(t, shape) do
+    case shape.properties.bounding_box do
+      %Geo.Polygon{} = box ->
+        [[{x_min, y_max}, {_, y_min}, {x_max, _}, _]] = box.coordinates
+        :dets.insert(t, {{x_min, x_max, y_min, y_max}, shape})
+
+      polygons when is_list(polygons) ->
+        for box <- polygons do
+          [[{x_min, y_max}, {_, y_min}, {x_max, _}, _]] = box.coordinates
+          :dets.insert(t, {{x_min, x_max, y_min, y_max}, shape})
+        end
+    end
+  end
+
+  @doc false
+  def get_geodata_table do
+    :dets.open_file(__MODULE__, dets_options())
+  end
+
+  @slots 1_000
+
+  @doc false
+  defp dets_options do
+    [file: filename(), access: :read, estimated_no_objects: @slots]
+  end
+
 end
