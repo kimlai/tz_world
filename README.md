@@ -21,8 +21,7 @@ def deps do
 end
 ```
 
-After adding `TzWorld` as a dependency, run `mix deps.get` to install it. Then
-run `mix tz_world.update` to install the timezone data.
+After adding `TzWorld` as a dependency, run `mix deps.get` to install it. Then run `mix tz_world.update` to install the timezone data.
 
 **NOTE** No data is installed with the package and until the data is installed
 with `mix tz_world.update` all calls to `TzWorld.timezone_at/1` will return
@@ -30,8 +29,7 @@ with `mix tz_world.update` all calls to `TzWorld.timezone_at/1` will return
 
 ### Configuration
 
-There is no mandatory configuration required however two options may be
-configured in `config.exs`:
+There is no mandatory configuration required however two options may be configured in `config.exs`:
 
 ```elixir
 config :tz_world,
@@ -45,12 +43,9 @@ config :tz_world,
 
 ## Backend selection
 
-`TzWorld` provides alternative strategies for managing access to the backend
-data. Each backend is implemented as a `GenServer` that needs to be either
-manually started with `BackendModule.start_link/1` or preferably added to your
-application's supervision tree.
+`TzWorld` provides alternative strategies for managing access to the backend data. Each backend is implemented as a `GenServer` that needs to be either manually started with `BackendModule.start_link/1` or preferably added to your application's supervision tree.
 
-The recommended backend is `TzWorld.Backend.EtsWithIndexCache`.
+The recommended backend is `TzWorld.Backend.EtsWithIndexCache` unless the host system is memory constrained in which case `TzWorld.Backend.DetsWithIndexCache` is recommended.
 
 For example:
 
@@ -63,7 +58,7 @@ defmodule MyApp.Application do
   def start(_type, _args) do
     children = [
       ...
-      TzWorld.Backend.DetsWithIndexCache
+      TzWorld.Backend.EtsWithIndexCache
     ]
 
     opts = [strategy: :one_for_one, name: MyApp.Supervisor]
@@ -103,28 +98,23 @@ Geo JSON data. The data is required and to install or update it run:
 mix tz_world.update
 ```
 
-This task will download, transform, zip and store the timezones Geo data.
-Depending on internet and computer speed this may take a few minutes.
+This task will download, transform, zip and store the timezones Geo data. Depending on internet and computer speed this may take a few minutes.
+
+By default `mix tz_world.update` will download geojson data that does *not* include time zone information for the oceans. There are two optional parameters that are accepted by `mix tz_world.update` that can be used to configure the desired behaviour:
+
+* `--include-oceans` will download the geojson data, including data for the oceans. This give almost complete global coverage of time zone data.  The default is `--no-include-oceans` which does not include data that covers the oceans. The geojson data include the oceans is about 10% larger than the data that does not include the oceans.
+
+* `--force` will force an update to the geojson data even if the installed data is the latest release. This option can be useful if you choose to switch from the data without ocean coverage to the data with ocean coverage (and the reverse). The default is `--no-force`.
 
 ### Updating the Timezone data
 
-From time-to-time the timezones Geo JSON data is updated in the [upstream
-project](https://github.com/evansiroky/timezone-boundary-builder/releases). The
-mix task `mix tz_world.update` will update the data if it is available. This
-task can be run at any time, it will detect when new data is available and only
-download it when a new release is available.
+From time-to-time the timezones Geo JSON data is updated in the [upstream project](https://github.com/evansiroky/timezone-boundary-builder/releases). The mix task `mix tz_world.update` will update the data if it is available.
 
-A running application can also be instructed to reload the data by executing
-`TzWorld.reload_timezone_data`.
+A running application can also be instructed to reload the data by executing `TzWorld.reload_timezone_data`.
 
 ## Usage
 
-The primary API is `TzWorld.timezone_at`. It takes either a `Geo.Point` struct
-or a `longitude` and `latitude` in degrees. Note the parameter order:
-`longitude`, `latitude`. It also takes and optional second parameter,
-`backend`, which must be one of the configured and running backend modules.  By
-default `timezone_at/2` will detect a running backend and will raise an
-exception if no running backend is found.
+The primary API is `TzWorld.timezone_at`. It takes either a `Geo.Point` struct or a `longitude` and `latitude` in degrees. Note the parameter order: `longitude`, `latitude`. It also takes and optional second parameter, `backend`, which must be one of the configured and running backend modules.  By default `timezone_at/2` will detect a running backend and will raise an exception if no running backend is found.
 
 ```elixir
 iex> TzWorld.timezone_at(%Geo.Point{coordinates: {3.2, 45.32}})
@@ -136,6 +126,8 @@ iex> TzWorld.timezone_at({3.2, 45.32})
 iex> TzWorld.timezone_at(%Geo.PointZ{coordinates: {-74.006, 40.7128, 0.0}})
 {:ok, "America/New_York"}
 
+# Assumes that the downloaded data does not include
+# data for the oceans (the default)
 iex> TzWorld.timezone_at(%Geo.Point{coordinates: {1.3, 65.62}})
 {:error, :time_zone_not_found}
 ```
