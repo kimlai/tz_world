@@ -4,17 +4,20 @@ defmodule Mix.Tasks.TzWorld.Update do
 
   ## Argument
 
-  * `--include_oceans [true | false]` determines whether to
-    include the geojson for oceans in the downloaded data.
-    The default is `false.`
+  * `--include-oceans` Will include the geojson for
+    oceans in the downloaded data.
+
+  * `--force` will force an update even if the data is
+    current. This can be used to force downloading data
+    including (or not including) time zone data for the oceans.
 
   """
 
   @shortdoc "Downloads and installs the latest Timezone GeoJSON data"
   @tag "[TzWorld]"
 
-  @aliases [o: :include_oceans]
-  @strict [include_oceans: :boolean]
+  @aliases [o: :include_oceans, f: :force]
+  @strict [include_oceans: :boolean, force: :boolean]
 
   use Mix.Task
   alias TzWorld.Downloader
@@ -22,28 +25,34 @@ defmodule Mix.Tasks.TzWorld.Update do
 
   def run(args) do
     case OptionParser.parse(args, aliases: @aliases, strict: @strict) do
-      {[include_oceans: include_oceans?], [], []} ->
-        update(include_oceans?)
+      {options, [], []} ->
+        include_oceans? = Keyword.get(options, :include_oceans, false)
+        force_update? = Keyword.get(options, :force, false)
 
-      {[], [], [{"--include_oceans", nil}]} ->
-        update(false)
-
-      {[], [], []} ->
-          update(false)
+        update(include_oceans?, force_update?)
 
       _other ->
-        Mix.raise("Invalid arguments found. TzWorld.Update accepts only a single optional " <>
-        "boolean argument `--include_oceans`.", exit_status: 1)
+        Mix.raise(
+        """
+        Invalid arguments found. `tzword.update` accepts the following:
+          --include-oceans
+          --no-include-oceans (default)
+          --force
+          --no-force (default)
+        """,
+        exit_status: 1)
     end
   end
 
-  def update(include_oceans?) do
-    Application.ensure_all_started(:tz_world)
-    Application.ensure_all_started(:inets)
-    Application.ensure_all_started(:ssl)
+  def update(include_oceans?, true = _force_update?) do
+    start_applications()
 
-    TzWorld.Backend.Memory.start_link
-    TzWorld.Backend.Dets.start_link
+    {latest_release, asset_url} = Downloader.latest_release(include_oceans?)
+    Downloader.get_latest_release(latest_release, asset_url)
+  end
+
+  def update(include_oceans?, false = _force_update?) do
+    start_applications()
 
     case Downloader.current_release() do
       {:ok, current_release} ->
@@ -67,5 +76,14 @@ defmodule Mix.Tasks.TzWorld.Update do
 
         Downloader.get_latest_release(latest_release, asset_url)
     end
+  end
+
+  defp start_applications do
+    Application.ensure_all_started(:tz_world)
+    Application.ensure_all_started(:inets)
+    Application.ensure_all_started(:ssl)
+
+    TzWorld.Backend.Memory.start_link
+    TzWorld.Backend.Dets.start_link
   end
 end

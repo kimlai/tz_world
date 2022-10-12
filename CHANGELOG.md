@@ -1,12 +1,20 @@
 ## Changelog for Tz_World
 
-## Tz_World v1.1.1
+## Tz_World v1.2.0
 
-This is the changelog for Tz_World v1.1.1 released on October 12th, 2022.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
+This is the changelog for Tz_World v1.2.0 released on October 12th, 2022.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
 
 ### Bug Fixes
 
 * Fix `TzWorld.Backend.Dets` to not raise an exception if there is no timezone data available.
+
+### Enhancements
+
+* Adds options to `mix tzworld.update` mix task:
+  * `--include_oceans` will download a 10% larger geojson data set that covers the worlds oceans
+  * `--force` will force a data update, even if the data is the latest release. This can be used
+    to switch between data that includes oceans and that which does not.
+  * Thanks to @lguminski for the feedback and suggestion.
 
 ## Tz_World v1.1.0
 
