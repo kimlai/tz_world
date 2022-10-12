@@ -1,14 +1,43 @@
 defmodule Mix.Tasks.TzWorld.Update do
-  @moduledoc "Downloads and installs the latest Timezone GeoJSON data"
+  @moduledoc """
+  Downloads and installs the latest Timezone GeoJSON data.
+
+  ## Argument
+
+  * `--include_oceans [true | false]` determines whether to
+    include the geojson for oceans in the downloaded data.
+    The default is `false.`
+
+  """
 
   @shortdoc "Downloads and installs the latest Timezone GeoJSON data"
   @tag "[TzWorld]"
+
+  @aliases [o: :include_oceans]
+  @strict [include_oceans: :boolean]
 
   use Mix.Task
   alias TzWorld.Downloader
   require Logger
 
-  def run(_args) do
+  def run(args) do
+    case OptionParser.parse(args, aliases: @aliases, strict: @strict) do
+      {[include_oceans: include_oceans?], [], []} ->
+        update(include_oceans?)
+
+      {[], [], [{"--include_oceans", nil}]} ->
+        update(false)
+
+      {[], [], []} ->
+          update(false)
+
+      _other ->
+        Mix.raise("Invalid arguments found. TzWorld.Update accepts only a single optional " <>
+        "boolean argument `--include_oceans`.", exit_status: 1)
+    end
+  end
+
+  def update(include_oceans?) do
     Application.ensure_all_started(:tz_world)
     Application.ensure_all_started(:inets)
     Application.ensure_all_started(:ssl)
@@ -18,22 +47,22 @@ defmodule Mix.Tasks.TzWorld.Update do
 
     case Downloader.current_release() do
       {:ok, current_release} ->
-        {latest_release, asset_url} = Downloader.latest_release()
+        {latest_release, asset_url} = Downloader.latest_release(include_oceans?)
 
         if latest_release > current_release do
-          Logger.info("#{@tag} Updating from release #{current_release} to #{latest_release}")
+          Logger.info("#{@tag} Updating from release #{current_release} to #{latest_release}.")
           Downloader.get_latest_release(latest_release, asset_url)
         else
           Logger.info(
-            "#{@tag} Currently installed release #{current_release} is the latest release"
+            "#{@tag} Currently installed release #{current_release} is the latest release."
           )
         end
 
       {:error, :enoent} ->
-        {latest_release, asset_url} = Downloader.latest_release()
+        {latest_release, asset_url} = Downloader.latest_release(include_oceans?)
 
         Logger.info(
-          "#{@tag} No timezone geo data installed. Installing the latest release #{latest_release}"
+          "#{@tag} No timezone geo data installed. Installing the latest release #{latest_release}."
         )
 
         Downloader.get_latest_release(latest_release, asset_url)
