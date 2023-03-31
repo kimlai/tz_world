@@ -126,6 +126,8 @@ defmodule TzWorld.Downloader do
   defp get_url(url) do
     require Logger
 
+    :httpc.set_options(httpc_opts())
+
     case  :httpc.request(:get, {url, headers()}, https_opts(), []) do
       {:ok, {{_version, 200, 'OK'}, _headers, body}} ->
         {:ok, :erlang.list_to_binary(body)}
@@ -226,6 +228,10 @@ defmodule TzWorld.Downloader do
 
   defp raise_if_no_cacertfile(file) do
     file
+  end
+
+  defp httpc_opts do
+    Application.get_env(TzWorld.app_name(), :httpc_opts, [])
   end
 
   defp https_opts do
