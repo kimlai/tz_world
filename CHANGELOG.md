@@ -1,5 +1,13 @@
 ## Changelog for Tz_World
 
+## Tz_World v1.2.1
+
+This is the changelog for Tz_World v1.2.1 released on March 31th, 2023.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
+
+### Enhancements
+
+* Add httpc [set_options/1](https://www.erlang.org/doc/man/httpc.html#set_options-1) support.
+
 ## Tz_World v1.2.0
 
 This is the changelog for Tz_World v1.2.0 released on October 12th, 2022.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
