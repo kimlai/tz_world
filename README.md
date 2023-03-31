@@ -16,7 +16,7 @@ Add `tz_world` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:tz_world, "~> 1.0"}
+    {:tz_world, "~> 1.2.1"}
   ]
 end
 ```
@@ -29,7 +29,7 @@ with `mix tz_world.update` all calls to `TzWorld.timezone_at/1` will return
 
 ### Configuration
 
-There is no mandatory configuration required however two options may be configured in `config.exs`:
+There is no mandatory configuration required however three options may be configured in `config.exs`:
 
 ```elixir
 config :tz_world,
@@ -38,9 +38,12 @@ config :tz_world,
   # The default is either the trust store included in the
   # libraries `CAStore` or `certifi` or the platform
   # trust store.
-  cacertfile: "path/to/ca_trust_store"
-```
-
+  cacertfile: "path/to/ca_trust_store",
+  # The default is no options, however one can set any `httpc` client options.
+  httpc_opts: [
+    proxy: {{String.to_charlist(proxy_host), proxy_port}, []}
+  ]
+```    
 ## Backend selection
 
 `TzWorld` provides alternative strategies for managing access to the backend data. Each backend is implemented as a `GenServer` that needs to be either manually started with `BackendModule.start_link/1` or preferably added to your application's supervision tree.
