@@ -1,8 +1,8 @@
 ## Changelog for Tz_World
 
-## Tz_World v1.2.1
+## Tz_World v1.3.0
 
-This is the changelog for Tz_World v1.2.1 released on March 31th, 2023.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
+This is the changelog for Tz_World v1.3.0 released on April 5th, 2023.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
 
 ### Enhancements
 
