@@ -2,7 +2,7 @@ defmodule TzWorld.Mixfile do
   use Mix.Project
 
   @source_url "https://github.com/kimlai/tz_world"
-  @version "1.2.1"
+  @version "1.3.0"
 
   def project do
     [
@@ -33,7 +33,7 @@ defmodule TzWorld.Mixfile do
     [
       {:geo, "~> 1.0 or ~> 2.0 or ~> 3.3"},
       {:jason, "~> 1.0"},
-      {:castore, "~> 0.1", optional: true},
+      {:castore, "~> 0.1 or ~> 1.0", optional: true},
       {:certifi, "~> 2.5", optional: true},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false},
       {:dialyxir, "~> 1.0", only: :dev, runtime: false, optional: true},

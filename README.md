@@ -105,7 +105,7 @@ This task will download, transform, zip and store the timezones Geo data. Depend
 
 By default `mix tz_world.update` will download geojson data that does *not* include time zone information for the oceans. There are two optional parameters that are accepted by `mix tz_world.update` that can be used to configure the desired behaviour:
 
-* `--include-oceans` will download the geojson data, including data for the oceans. This give almost complete global coverage of time zone data.  The default is `--no-include-oceans` which does not include data that covers the oceans. The geojson data include the oceans is about 10% larger than the data that does not include the oceans.
+* `--include-oceans` will download the geojson data, including data for the oceans. This give almost complete global coverage of time zone data.  The default is `--no-include-oceans` which does not include data that covers the oceans. The geojson data including the oceans is about 10% larger than the data that does not include the oceans.
 
 * `--force` will force an update to the geojson data even if the installed data is the latest release. This option can be useful if you choose to switch from the data without ocean coverage to the data with ocean coverage (and the reverse). The default is `--no-force`.
 
