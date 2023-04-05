@@ -6,7 +6,7 @@ This is the changelog for Tz_World v1.3.0 released on April 5th, 2023.  For olde
 
 ### Enhancements
 
-* Add httpc [set_options/1](https://www.erlang.org/doc/man/httpc.html#set_options-1) support.
+* Add httpc [set_options/1](https://www.erlang.org/doc/man/httpc.html#set_options-1) support. Thanks to @gabrielgiordan for the PR (and the PR for fixing CI).
 
 ## Tz_World v1.2.0
 
