@@ -206,7 +206,7 @@ defmodule TzWorld.Downloader do
       A certificate trust store is required in
       order to download locales for your configuration.
 
-      Since ex_cldr could not detect a system
+      Since tz_world could not detect a system
       installed certificate trust store one of the
       following actions may be taken:
 
