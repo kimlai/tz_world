@@ -7,7 +7,7 @@ defmodule TzWorld.Mixfile do
   def project do
     [
       app: :tz_world,
-      name: "TzWord",
+      name: "TzWorld",
       version: @version,
       elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
