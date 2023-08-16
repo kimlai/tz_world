@@ -1,5 +1,17 @@
 ## Changelog for Tz_World
 
+## Tz_World v1.3.1
+
+This is the changelog for Tz_World v1.3.1 released on August 17th, 2023.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
+
+### Enhancements
+
+* Always send a `User-Agent` header to the Github API to avoid 403 responses.
+
+* Add `:ssl` to `:extra_applications` to support Elixir 1.15 and OTP 26.
+
+* Update `TzWorld.Downloader.get_url/1` to follow the [erlef security guidelines](https://erlef.github.io/security-wg/secure_coding_and_deployment_hardening/ssl).
+
 ## Tz_World v1.3.0
 
 This is the changelog for Tz_World v1.3.0 released on April 5th, 2023.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)

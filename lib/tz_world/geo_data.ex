@@ -29,7 +29,7 @@ defmodule TzWorld.GeoData do
     |> to_charlist
   end
 
-  def generate_compressed_data(source_data, version) do
+  def generate_compressed_data(source_data, version) when is_list(source_data) do
     geo_json = transform_source_data(source_data, version)
     binary_data = :erlang.term_to_binary(geo_json)
     :zip.zip(compressed_data_path(), [{etf_data_path(), binary_data}])
@@ -41,16 +41,26 @@ defmodule TzWorld.GeoData do
     end
   end
 
-  def transform_source_data(source_data, version) do
-    {:ok, [{_, json} | _rest]} = :zip.unzip(source_data, [:memory])
+  def transform_source_data(source_data, version) when is_list(source_data) do
+    source_data
+    |> :erlang.list_to_binary
+    |> transform_source_data(version)
+  end
 
-    json
-    |> Jason.decode!()
-    |> Geo.JSON.decode!()
-    |> Map.get(:geometries)
-    |> Enum.map(&update_map_keys/1)
-    |> Enum.map(&calculate_bounding_box/1)
-    |> List.insert_at(0, version)
+  def transform_source_data(source_data, version) when is_binary(source_data) do
+    case :zip.unzip(source_data, [:memory]) do
+      {:ok, [{_, json} | _rest]} ->
+        json
+        |> Jason.decode!()
+        |> Geo.JSON.decode!()
+        |> Map.get(:geometries)
+        |> Enum.map(&update_map_keys/1)
+        |> Enum.map(&calculate_bounding_box/1)
+        |> List.insert_at(0, version)
+
+      error ->
+        raise RuntimeError, "Unable to unzip downloaded data. Error: #{inspect error}"
+    end
   end
 
   defp update_map_keys(%{properties: properties} = poly) do
