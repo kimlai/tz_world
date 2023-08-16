@@ -618,7 +618,7 @@ defmodule TzWorld.Downloader do
   end
 
   defp secure_ssl? do
-    case String.upcase(System.get_env(@tzworld_unsafe_https)) do
+    case String.upcase(System.get_env(@tzworld_unsafe_https, "TRUE")) do
       nil -> true
       "FALSE" -> false
       "NIL" -> false
