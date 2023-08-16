@@ -2,7 +2,7 @@ defmodule TzWorld.Mixfile do
   use Mix.Project
 
   @source_url "https://github.com/kimlai/tz_world"
-  @version "1.3.0"
+  @version "1.3.1"
 
   def project do
     [
@@ -25,7 +25,7 @@ defmodule TzWorld.Mixfile do
 
   def application do
     [
-      extra_applications: [:logger, :public_key, :inets]
+      extra_applications: [:logger, :public_key, :inets, :ssl]
     ]
   end
 
