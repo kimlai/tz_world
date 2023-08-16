@@ -4,7 +4,9 @@
 
 This is the changelog for Tz_World v1.3.1 released on August 17th, 2023.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
 
-### Enhancements
+### Bug Fixes.
+
+Thanks to @mjquinlan2000 for the report of issues on Elixir 1.15 and OTP 26.
 
 * Always send a `User-Agent` header to the Github API to avoid 403 responses.
 
