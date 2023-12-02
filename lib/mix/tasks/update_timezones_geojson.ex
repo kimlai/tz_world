@@ -84,7 +84,7 @@ defmodule Mix.Tasks.TzWorld.Update do
     {:ok, _} = Application.ensure_all_started(:ssl)
     {:module, _} = Code.ensure_loaded(:ssl_cipher)
 
-    TzWorld.Backend.Memory.start_link
-    TzWorld.Backend.Dets.start_link
+    TzWorld.Backend.Memory.start_link()
+    TzWorld.Backend.Dets.start_link()
   end
 end
