@@ -79,11 +79,12 @@ defmodule Mix.Tasks.TzWorld.Update do
   end
 
   defp start_applications do
-    Application.ensure_all_started(:tz_world)
-    Application.ensure_all_started(:inets)
-    Application.ensure_all_started(:ssl)
+    {:ok, _} = Application.ensure_all_started(:tz_world)
+    {:ok, _} = Application.ensure_all_started(:inets)
+    {:ok, _} = Application.ensure_all_started(:ssl)
+    {:module, _} = Code.ensure_loaded(:ssl_cipher)
 
-    TzWorld.Backend.Memory.start_link
-    TzWorld.Backend.Dets.start_link
+    TzWorld.Backend.Memory.start_link()
+    TzWorld.Backend.Dets.start_link()
   end
 end

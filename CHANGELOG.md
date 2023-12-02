@@ -1,10 +1,18 @@
 ## Changelog for Tz_World
 
+## Tz_World v1.3.2
+
+This is the changelog for Tz_World v1.3.2 released on December 2nd 2023.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
+
+### Bug Fixes
+
+* Fixes compiler warnings for Elixir 1.16
+
 ## Tz_World v1.3.1
 
 This is the changelog for Tz_World v1.3.1 released on August 17th, 2023.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
 
-### Bug Fixes.
+### Bug Fixes
 
 Thanks to @mjquinlan2000 for the report of issues on Elixir 1.15 and OTP 26.
 
