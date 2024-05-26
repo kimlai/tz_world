@@ -122,7 +122,7 @@ defmodule TzWorld.Downloader do
   end
 
   def get_url(url) do
-    headers = [{'User-Agent', user_agent()}]
+    headers = [{String.to_charlist("User-Agent"), user_agent()}]
     get({url, headers})
   end
 

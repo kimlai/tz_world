@@ -7,7 +7,7 @@ defmodule TzWorldTest do
 
   setup_all do
     for backend <- @backends do
-      backend.start_link
+      backend.start_link()
     end
 
     :ok
