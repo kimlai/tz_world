@@ -10,7 +10,7 @@ This is the changelog for Tz_World v1.4.0 released on ______, 2024.  For older c
 
 ```elixir
 config :tz_world,
-  backend: MyTzWorldBackend
+  default_backend: MyTzWorldBackend
 ```
 
 ## Tz_World v1.3.3
