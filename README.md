@@ -16,7 +16,7 @@ Add `tz_world` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:tz_world, "~> 1.2.1"}
+    {:tz_world, "~> 1.3"}
   ]
 end
 ```
@@ -29,10 +29,13 @@ with `mix tz_world.update` all calls to `TzWorld.timezone_at/1` will return
 
 ### Configuration
 
-There is no mandatory configuration required however three options may be configured in `config.exs`:
+There is no mandatory configuration required however four options may be configured in `config.exs`:
 
 ```elixir
 config :tz_world,
+  # Configure a custom TzWorld backend. It will be used
+  # as the default backend in calls to `TzWorld.timezone_at/1`
+  backend: MyTzWorldBackend,
   # The default is the `priv` directory of `:tz_world`
   data_dir: "geodata/directory",
   # The default is either the trust store included in the
@@ -91,6 +94,16 @@ The following backends are available:
 * `TzWorld.Backend.EtsWithIndexCache` which uses `:ets` for storage with an
   additional in-memory cache of the bounding boxes. This still uses about 512Mb
   but is faster than any of the other backends by about 40%
+  
+Other backends can be implemented as long as they follow the `TzWorld.Backend`
+behaviour. Custom backends should be configured in `config.exs` or `runtime.exs`
+under the `:backend` key so that it will be considered as the default for calls
+to `TzWorld.timezone_at/1`. For example:
+
+```elixir
+config :tz_world,
+  backend: MyTzWorldBackend
+```
 
 ## Installing the Timezones Geo JSON data
 

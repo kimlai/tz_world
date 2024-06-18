@@ -1,5 +1,18 @@
 ## Changelog for Tz_World
 
+## Tz_World v1.4.0
+
+This is the changelog for Tz_World v1.4.0 released on ______, 2024.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
+
+### Enhancements
+
+* Adds support for easier configuration of default custom backends.  In previous releases, the default backend was resolved by only considering the built-in backends. From this release, a custom backend can be configured in `config.exs` or `runtime.exs`. If so configured, that backend will be the default for calls to `TzWorld.timezone_at/1`. For example:
+
+```elixir
+config :tz_world,
+  backend: MyTzWorldBackend
+```
+
 ## Tz_World v1.3.3
 
 This is the changelog for Tz_World v1.3.3 released on May 27th, 2024.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)

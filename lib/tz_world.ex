@@ -231,7 +231,7 @@ defmodule TzWorld do
     end
   end
 
-  @backend_precedence [
+  @default_backend_precedence [
     TzWorld.Backend.EtsWithIndexCache,
     TzWorld.Backend.Memory,
     TzWorld.Backend.DetsWithIndexCache,
@@ -240,10 +240,12 @@ defmodule TzWorld do
   ]
 
   def fetch_backend do
-    Enum.find(@backend_precedence, &Process.whereis/1) ||
+    [Application.get_env(:tz_wprld, :backend) | @default_backend_precedence]
+    |> Enum.reject(&is_nil/1)
+    |> Enum.find(&Process.whereis/1) ||
       raise(RuntimeError,
         "No TzWorld backend appears to be running. " <>
-        "please add one of #{inspect @backend_precedence} to your supervision tree"
+        "please add one of #{inspect @default_backend_precedence} to your supervision tree"
       )
   end
 
