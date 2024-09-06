@@ -6,6 +6,7 @@ defmodule TzWorld.GeoData do
   @osm_srid 3857
 
   defdelegate version, to: TzWorld
+  import TzWorld, only: [maybe_log: 2]
 
   def default_data_dir do
     TzWorld.app_name()
@@ -29,10 +30,13 @@ defmodule TzWorld.GeoData do
     |> to_charlist
   end
 
-  def generate_compressed_data(source_data, version) when is_list(source_data) do
-    geo_json = transform_source_data(source_data, version)
-    binary_data = :erlang.term_to_binary(geo_json)
+  def generate_compressed_data(source_data, version, trace? \\ false) when is_list(source_data) do
+    maybe_log("Transforming source data", trace?)
+    binary_data = transform_source_data(source_data, version)
+    maybe_log("Transformed source data", trace?)
+    :erlang.garbage_collect()
     :zip.zip(compressed_data_path(), [{etf_data_path(), binary_data}])
+    maybe_log("Compressed data into a zip file", trace?)
   end
 
   def load_compressed_data do
@@ -51,16 +55,27 @@ defmodule TzWorld.GeoData do
     case :zip.unzip(source_data, [:memory]) do
       {:ok, [{_, json} | _rest]} ->
         json
-        |> Jason.decode!()
-        |> Geo.JSON.decode!()
-        |> Map.get(:geometries)
-        |> Enum.map(&update_map_keys/1)
-        |> Enum.map(&calculate_bounding_box/1)
-        |> List.insert_at(0, version)
+        |> decode_json(version)
+        |> :erlang.term_to_binary()
 
       error ->
         raise RuntimeError, "Unable to unzip downloaded data. Error: #{inspect error}"
     end
+  end
+
+  defp decode_json(json, version) do
+    json
+    |> json_decode!()
+    |> Geo.JSON.decode!()
+    |> Map.fetch!(:geometries)
+    |> Enum.map(&update_map_keys/1)
+    |> Enum.map(&calculate_bounding_box/1)
+    |> List.insert_at(0, version)
+  end
+
+  defp json_decode!(string) do
+    # {json, :ok, ""} = :json.decode(string, :ok, %{null: nil})
+    Jason.decode!(string)
   end
 
   defp update_map_keys(%{properties: properties} = poly) do

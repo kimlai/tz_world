@@ -25,7 +25,7 @@ defmodule TzWorld.Mixfile do
 
   def application do
     [
-      extra_applications: [:logger, :public_key, :inets, :ssl]
+      extra_applications: [:logger, :public_key, :inets, :ssl, :wx, :observer]
     ]
   end
 

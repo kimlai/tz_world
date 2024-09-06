@@ -16,8 +16,8 @@ defmodule Mix.Tasks.TzWorld.Update do
   @shortdoc "Downloads and installs the latest Timezone GeoJSON data"
   @tag "[TzWorld]"
 
-  @aliases [o: :include_oceans, f: :force]
-  @strict [include_oceans: :boolean, force: :boolean]
+  @aliases [o: :include_oceans, f: :force, t: :trace]
+  @strict [include_oceans: :boolean, force: :boolean, trace: :boolean]
 
   use Mix.Task
   alias TzWorld.Downloader
@@ -28,8 +28,9 @@ defmodule Mix.Tasks.TzWorld.Update do
       {options, [], []} ->
         include_oceans? = Keyword.get(options, :include_oceans, false)
         force_update? = Keyword.get(options, :force, false)
+        trace? = Keyword.get(options, :trace, false)
 
-        update(include_oceans?, force_update?)
+        update(include_oceans?, force_update?, trace?)
 
       _other ->
         Mix.raise(
@@ -39,16 +40,22 @@ defmodule Mix.Tasks.TzWorld.Update do
           --no-include-oceans (default)
           --force
           --no-force (default)
+          --trace
+          --no-trace (default)
         """,
         exit_status: 1)
     end
   end
 
-  def update(include_oceans?, true = _force_update?) do
+  def update(include_oceans?, true = _force_update?, trace?) do
     start_applications()
 
-    {latest_release, asset_url} = Downloader.latest_release(include_oceans?)
-    Downloader.get_latest_release(latest_release, asset_url)
+    {latest_release, asset_url} = Downloader.latest_release(include_oceans?, trace?)
+    Downloader.get_latest_release(latest_release, asset_url, trace?)
+
+    :ok = TzWorld.Backend.Memory.stop()
+    :ok = TzWorld.Backend.Dets.stop()
+    :erlang.garbage_collect()
   end
 
   def update(include_oceans?, false = _force_update?) do
