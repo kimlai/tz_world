@@ -58,7 +58,7 @@ defmodule Mix.Tasks.TzWorld.Update do
     :erlang.garbage_collect()
   end
 
-  def update(include_oceans?, false = _force_update?) do
+  def update(include_oceans?, false = _force_update?, _trace?) do
     start_applications()
 
     case Downloader.current_release() do
