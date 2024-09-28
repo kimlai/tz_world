@@ -240,12 +240,15 @@ defmodule TzWorld do
   ]
 
   def fetch_backend do
-    [Application.get_env(:tz_wprld, :backend) | @default_backend_precedence]
-    |> Enum.reject(&is_nil/1)
-    |> Enum.find(&Process.whereis/1) ||
+    backends =
+      [Application.get_env(:tz_world, :default_backend) | @default_backend_precedence]
+      |> Enum.uniq()
+      |> Enum.reject(&is_nil/1)
+
+    Enum.find(backends, &Process.whereis/1) ||
       raise(RuntimeError,
         "No TzWorld backend appears to be running. " <>
-        "please add one of #{inspect @default_backend_precedence} to your supervision tree"
+        "please add one of #{inspect backends} to your supervision tree"
       )
   end
 
