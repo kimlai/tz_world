@@ -59,16 +59,16 @@ defmodule Mix.Tasks.TzWorld.Update do
     :erlang.garbage_collect()
   end
 
-  def update(include_oceans?, false = _force_update?, _trace?) do
+  def update(include_oceans?, false = _force_update?, trace?) do
     start_applications()
 
     case Downloader.current_release() do
       {:ok, current_release} ->
-        {latest_release, asset_url} = Downloader.latest_release(include_oceans?)
+        {latest_release, asset_url} = Downloader.latest_release(include_oceans?, trace?)
 
         if latest_release > current_release do
           Logger.info("#{@tag} Updating from release #{current_release} to #{latest_release}.")
-          Downloader.get_latest_release(latest_release, asset_url)
+          Downloader.get_latest_release(latest_release, asset_url, trace?)
         else
           Logger.info(
             "#{@tag} Currently installed release #{current_release} is the latest release."
@@ -76,13 +76,13 @@ defmodule Mix.Tasks.TzWorld.Update do
         end
 
       {:error, :enoent} ->
-        {latest_release, asset_url} = Downloader.latest_release(include_oceans?)
+        {latest_release, asset_url} = Downloader.latest_release(include_oceans?, trace?)
 
         Logger.info(
           "#{@tag} No timezone geo data installed. Installing the latest release #{latest_release}."
         )
 
-        Downloader.get_latest_release(latest_release, asset_url)
+        Downloader.get_latest_release(latest_release, asset_url, trace?)
     end
   end
 
