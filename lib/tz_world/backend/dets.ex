@@ -2,6 +2,7 @@ defmodule TzWorld.Backend.Dets do
   @moduledoc false
 
   @behaviour TzWorld.Backend
+  import TzWorld, only: [maybe_log: 2]
 
   use GenServer
 
@@ -13,6 +14,11 @@ defmodule TzWorld.Backend.Dets do
   @doc false
   def start_link(options \\ []) do
     GenServer.start_link(__MODULE__, options, name: __MODULE__)
+  end
+
+  @doc false
+  def stop(reason \\ :normal, timeout \\ :infinity) do
+    GenServer.stop(__MODULE__, reason, timeout)
   end
 
   @doc false
@@ -39,8 +45,10 @@ defmodule TzWorld.Backend.Dets do
 
   @doc false
   @spec reload_timezone_data :: {:ok, term}
-  def reload_timezone_data do
+  def reload_timezone_data(trace? \\ false) do
+    maybe_log("Reloading timezone data", trace?)
     GenServer.call(__MODULE__, :reload_data, @timeout * 3)
+    maybe_log("Reloaded timezone data", trace?)
   end
 
   # --- Server callback implementation

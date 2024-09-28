@@ -18,6 +18,11 @@ defmodule TzWorld.Backend.Ets do
   end
 
   @doc false
+  def stop(reason \\ :normal, timeout \\ :infinity) do
+    GenServer.stop(__MODULE__, reason, timeout)
+  end
+
+  @doc false
   def init(options) do
     {:ok, [], {:continue, {:load_data, options}}}
   end

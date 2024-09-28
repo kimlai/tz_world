@@ -14,6 +14,11 @@ defmodule TzWorld.Backend.Memory do
   end
 
   @doc false
+  def stop(reason \\ :normal, timeout \\ :infinity) do
+    GenServer.stop(__MODULE__, reason, timeout)
+  end
+
+  @doc false
   def init(_options) do
     {:ok, [], {:continue, :load_data}}
   end

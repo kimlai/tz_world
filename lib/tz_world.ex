@@ -252,4 +252,16 @@ defmodule TzWorld do
       )
   end
 
+  @doc false
+  require Logger
+  def maybe_log(message, trace? \\ false)
+
+  def maybe_log(message, true) do
+    memory = trunc(:erlang.memory()[:total] / 1_048_576)
+    Logger.debug("[#{memory} MiB] " <> message)
+  end
+
+  def maybe_log(_message, false) do
+    nil
+  end
 end
