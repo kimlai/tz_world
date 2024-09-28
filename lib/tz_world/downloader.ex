@@ -71,34 +71,35 @@ defmodule TzWorld.Downloader do
   def update_release(options \\ []) do
     include_oceans? = Keyword.get(options, :include_oceans, false)
     force_update? = Keyword.get(options, :force, false)
+    trace? = Keyword.get(options, :trace, false)
 
-    update_release(include_oceans?, force_update?)
+    update_release(include_oceans?, force_update?, trace?)
   end
 
-  def update_release(include_oceans?, true = _force_update?) do
+  def update_release(include_oceans?, true = _force_update?, trace?) do
     {latest_release, asset_url} = latest_release(include_oceans?)
-    get_and_load_latest_release(latest_release, asset_url)
+    get_and_load_latest_release(latest_release, asset_url, trace?)
   end
 
-  def update_release(include_oceans?, false = _force_update?) do
+  def update_release(include_oceans?, false = _force_update?, trace?) do
     case current_release() do
       {:ok, current_release} ->
         {latest_release, asset_url} = latest_release(include_oceans?)
 
         if latest_release > current_release do
-          get_and_load_latest_release(latest_release, asset_url)
+          get_and_load_latest_release(latest_release, asset_url, trace?)
         else
           {:ok, current_release}
         end
 
       {:error, :enoent} ->
-        {latest_release, asset_url} = latest_release(include_oceans?)
-        get_and_load_latest_release(latest_release, asset_url)
+        {latest_release, asset_url} = latest_release(include_oceans?, trace?)
+        get_and_load_latest_release(latest_release, asset_url, trace?)
     end
   end
 
-  def get_and_load_latest_release(latest_release, asset_url) do
-    with {:ok, _} <- get_latest_release(latest_release, asset_url) do
+  def get_and_load_latest_release(latest_release, asset_url, trace?) do
+    with {:ok, _} <- get_latest_release(latest_release, asset_url, trace?) do
       TzWorld.reload_timezone_data()
     end
   end

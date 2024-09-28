@@ -13,6 +13,10 @@ config :tz_world,
   default_backend: MyTzWorldBackend
 ```
 
+* Adds a `--trace` flag to `mix tz_world.update`. This flag will trigger additional logging during the update process including memory utilization on the BEAM.
+
+* Adds some memory use optimizations during the download process. Relates to #38 but likely does not fully solve this issue.
+ 
 * Add support for [geo 4.0](https://github.com/felt/geo).
 
 ## Tz_World v1.3.3
