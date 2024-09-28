@@ -2,7 +2,7 @@
 
 ## Tz_World v1.4.0
 
-This is the changelog for Tz_World v1.4.0 released on ______, 2024.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
+This is the changelog for Tz_World v1.4.0 released on September 29th, 2024.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
 
 ### Enhancements
 
@@ -12,6 +12,8 @@ This is the changelog for Tz_World v1.4.0 released on ______, 2024.  For older c
 config :tz_world,
   default_backend: MyTzWorldBackend
 ```
+
+* Add support for [geo 4.0](https://github.com/felt/geo).
 
 ## Tz_World v1.3.3
 
