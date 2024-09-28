@@ -2,7 +2,7 @@ defmodule TzWorld.Mixfile do
   use Mix.Project
 
   @source_url "https://github.com/kimlai/tz_world"
-  @version "1.3.3"
+  @version "1.4.0"
 
   def project do
     [
@@ -25,13 +25,13 @@ defmodule TzWorld.Mixfile do
 
   def application do
     [
-      extra_applications: [:logger, :public_key, :inets, :ssl]
+      extra_applications: [:logger, :public_key, :inets, :ssl, :wx, :observer]
     ]
   end
 
   defp deps do
     [
-      {:geo, "~> 1.0 or ~> 2.0 or ~> 3.3"},
+      {:geo, "~> 1.0 or ~> 2.0 or ~> 3.3 or ~> 4.0"},
       {:jason, "~> 1.0"},
       {:castore, "~> 0.1 or ~> 1.0", optional: true},
       {:certifi, "~> 2.5", optional: true},

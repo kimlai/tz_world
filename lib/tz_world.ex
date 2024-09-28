@@ -231,7 +231,7 @@ defmodule TzWorld do
     end
   end
 
-  @backend_precedence [
+  @default_backend_precedence [
     TzWorld.Backend.EtsWithIndexCache,
     TzWorld.Backend.Memory,
     TzWorld.Backend.DetsWithIndexCache,
@@ -240,11 +240,28 @@ defmodule TzWorld do
   ]
 
   def fetch_backend do
-    Enum.find(@backend_precedence, &Process.whereis/1) ||
+    backends =
+      [Application.get_env(:tz_world, :default_backend) | @default_backend_precedence]
+      |> Enum.uniq()
+      |> Enum.reject(&is_nil/1)
+
+    Enum.find(backends, &Process.whereis/1) ||
       raise(RuntimeError,
         "No TzWorld backend appears to be running. " <>
-        "please add one of #{inspect @backend_precedence} to your supervision tree"
+        "please add one of #{inspect backends} to your supervision tree"
       )
   end
 
+  @doc false
+  require Logger
+  def maybe_log(message, trace? \\ false)
+
+  def maybe_log(message, true) do
+    memory = trunc(:erlang.memory()[:total] / 1_048_576)
+    Logger.debug("[#{memory} MiB] " <> message)
+  end
+
+  def maybe_log(_message, false) do
+    nil
+  end
 end

@@ -8,6 +8,8 @@ defmodule TzWorld.Downloader do
   alias TzWorld.GeoData
   require Logger
 
+  import TzWorld, only: [maybe_log: 2]
+
   @release_url "https://api.github.com/repos/evansiroky/timezone-boundary-builder/releases"
   @timezones_geojson "timezones.geojson.zip"
   @timezones_with_oceans_geojson "timezones-with-oceans.geojson.zip"
@@ -21,8 +23,8 @@ defmodule TzWorld.Downloader do
   the latest timezones geo JSON data
 
   """
-  def latest_release(include_oceans? \\ false) do
-    with {:ok, releases} <- get_releases() do
+  def latest_release(include_oceans? \\ false, trace? \\ false) do
+    with {:ok, releases} <- get_releases(trace?) do
       release = hd(releases)
       release_number = Map.get(release, "name")
       asset_name = asset_name(include_oceans?)
@@ -102,10 +104,10 @@ defmodule TzWorld.Downloader do
     end
   end
 
-  def get_latest_release(latest_release, asset_url) do
+  def get_latest_release(latest_release, asset_url, trace? \\ false) do
     with {:ok, source_data} <- get_url(asset_url) do
-      GeoData.generate_compressed_data(source_data, latest_release)
-      TzWorld.Backend.Dets.reload_timezone_data()
+      GeoData.generate_compressed_data(source_data, latest_release, trace?)
+      TzWorld.Backend.Dets.reload_timezone_data(trace?)
     end
   end
 
@@ -114,11 +116,13 @@ defmodule TzWorld.Downloader do
     |> Enum.find(fn asset -> Map.get(asset, "name") == requested_asset end)
   end
 
-  defp get_releases do
+  defp get_releases(trace?) do
     with {:ok, json} <- get_url(@release_url),
          {:ok, releases} <- Jason.decode(json) do
+      maybe_log("Retrieved list of #{Enum.count(releases)} available timezone data releases.", trace?)
       {:ok, releases}
     end
+
   end
 
   def get_url(url) do

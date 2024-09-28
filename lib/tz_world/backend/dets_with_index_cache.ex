@@ -16,6 +16,11 @@ defmodule TzWorld.Backend.DetsWithIndexCache do
   end
 
   @doc false
+  def stop(reason \\ :normal, timeout \\ :infinity) do
+    GenServer.stop(__MODULE__, reason, timeout)
+  end
+
+  @doc false
   def init(_state) do
     {:ok, [], {:continue, :open_dets_file}}
   end
