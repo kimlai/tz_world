@@ -100,10 +100,11 @@ defmodule TzWorld.Backend.DetsWithIndexCache do
   @doc false
   def handle_continue(:open_dets_file, _state) do
     case get_geodata_table() do
-     {:error, {:file_error, _, :enoent}} ->
-       {:noreply, {:error, :enoent}}
-     {:ok, __MODULE__} ->
-       {:noreply, get_index_cache()}
+      {:error, {:file_error, _, :enoent}} ->
+        {:noreply, {:error, :enoent}}
+
+      {:ok, __MODULE__} ->
+        {:noreply, get_index_cache()}
     end
   end
 
@@ -162,7 +163,7 @@ defmodule TzWorld.Backend.DetsWithIndexCache do
     point
     |> select_candidates(state)
     |> Enum.filter(&TzWorld.contains?(&1, point))
-    |> Enum.map(&(&1.properties.tzid))
+    |> Enum.map(& &1.properties.tzid)
     |> wrap(:ok)
   end
 

@@ -94,7 +94,7 @@ defmodule TzWorld.Backend.Ets do
     point
     |> select_candidates()
     |> Enum.filter(&TzWorld.contains?(&1, point))
-    |> Enum.map(&(&1.properties.tzid))
+    |> Enum.map(& &1.properties.tzid)
     |> wrap(:ok)
   end
 
@@ -112,5 +112,4 @@ defmodule TzWorld.Backend.Ets do
       nil -> {:error, :time_zone_not_found}
     end
   end
-
 end
