@@ -13,7 +13,7 @@ defmodule TzWorld do
     TzWorld.Backend.Dets,
     TzWorld.Backend.DetsWithIndexCache,
     TzWorld.Backend.Ets,
-    TzWorld.Backend.EtsWithIndexCache,
+    TzWorld.Backend.EtsWithIndexCache
   ]
 
   @doc """
@@ -99,7 +99,7 @@ defmodule TzWorld do
 
   """
   @spec timezone_at(Geo.Point.t(), backend) ::
-    {:ok, String.t()} | {:error, atom}
+          {:ok, String.t()} | {:error, atom}
 
   def timezone_at(point, backend \\ fetch_backend())
 
@@ -108,7 +108,7 @@ defmodule TzWorld do
   end
 
   @spec timezone_at(Geo.PointZ.t(), backend) ::
-    {:ok, String.t()} | {:error, atom}
+          {:ok, String.t()} | {:error, atom}
 
   def timezone_at(%PointZ{coordinates: {lng, lat, _alt}}, backend) when is_atom(backend) do
     point = %Point{coordinates: {lng, lat}}
@@ -116,7 +116,7 @@ defmodule TzWorld do
   end
 
   @spec timezone_at({lng :: number, lat :: number}, backend) ::
-    {:ok, String.t()} | {:error, atom}
+          {:ok, String.t()} | {:error, atom}
 
   def timezone_at({lng, lat}, backend) when is_lng(lng) and is_lat(lat) do
     point = %Geo.Point{coordinates: {lng, lat}}
@@ -171,7 +171,7 @@ defmodule TzWorld do
 
   """
   @spec all_timezones_at(Geo.Point.t(), backend) ::
-    {:ok, [String.t()]}
+          {:ok, [String.t()]}
 
   def all_timezones_at(point, backend \\ fetch_backend())
 
@@ -180,7 +180,7 @@ defmodule TzWorld do
   end
 
   @spec all_timezones_at(Geo.PointZ.t(), backend) ::
-    {:ok, [String.t()]}
+          {:ok, [String.t()]}
 
   def all_timezones_at(%PointZ{coordinates: {lng, lat, _alt}}, backend) when is_atom(backend) do
     point = %Point{coordinates: {lng, lat}}
@@ -188,7 +188,7 @@ defmodule TzWorld do
   end
 
   @spec all_timezones_at({lng :: number, lat :: number}, backend) ::
-    {:ok, [String.t()]}
+          {:ok, [String.t()]}
 
   def all_timezones_at({lng, lat}, backend) when is_lng(lng) and is_lat(lat) do
     point = %Geo.Point{coordinates: {lng, lat}}
@@ -246,9 +246,10 @@ defmodule TzWorld do
       |> Enum.reject(&is_nil/1)
 
     Enum.find(backends, &Process.whereis/1) ||
-      raise(RuntimeError,
+      raise(
+        RuntimeError,
         "No TzWorld backend appears to be running. " <>
-        "please add one of #{inspect backends} to your supervision tree"
+          "please add one of #{inspect(backends)} to your supervision tree"
       )
   end
 

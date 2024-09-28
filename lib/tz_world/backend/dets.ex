@@ -56,12 +56,14 @@ defmodule TzWorld.Backend.Dets do
   @doc false
   def handle_continue(:open_dets_file, _state) do
     case get_geodata_table() do
-     {:error, {:file_error, _, :enoent}} ->
-       {:noreply, {:error, :enoent}}
-     {:error, {:not_closed, _path}} ->
-       raise "NOT CLOSED"
-     {:ok, __MODULE__} ->
-       {:noreply, {:ok, __MODULE__}}
+      {:error, {:file_error, _, :enoent}} ->
+        {:noreply, {:error, :enoent}}
+
+      {:error, {:not_closed, _path}} ->
+        raise "NOT CLOSED"
+
+      {:ok, __MODULE__} ->
+        {:noreply, {:ok, __MODULE__}}
     end
   end
 
@@ -112,7 +114,7 @@ defmodule TzWorld.Backend.Dets do
     point
     |> select_candidates()
     |> Enum.filter(&TzWorld.contains?(&1, point))
-    |> Enum.map(&(&1.properties.tzid))
+    |> Enum.map(& &1.properties.tzid)
     |> wrap(:ok)
   end
 
@@ -200,5 +202,4 @@ defmodule TzWorld.Backend.Dets do
   defp dets_options do
     [file: filename(), access: :read, estimated_no_objects: @slots]
   end
-
 end

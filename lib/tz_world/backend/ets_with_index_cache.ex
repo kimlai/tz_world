@@ -101,7 +101,7 @@ defmodule TzWorld.Backend.EtsWithIndexCache do
     point
     |> select_candidates(state)
     |> Enum.filter(&TzWorld.contains?(&1, point))
-    |> Enum.map(&(&1.properties.tzid))
+    |> Enum.map(& &1.properties.tzid)
     |> wrap(:ok)
   end
 

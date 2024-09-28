@@ -96,7 +96,7 @@ defmodule TzWorld.Backend.Memory do
         tz_data
         |> Enum.filter(&TzWorld.contains?(&1.properties.bounding_box, point))
         |> Enum.filter(&TzWorld.contains?(&1, point))
-        |> Enum.map(&(&1.properties.tzid))
+        |> Enum.map(& &1.properties.tzid)
         |> wrap(:ok)
       end
 

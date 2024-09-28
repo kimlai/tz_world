@@ -34,16 +34,17 @@ defmodule Mix.Tasks.TzWorld.Update do
 
       _other ->
         Mix.raise(
-        """
-        Invalid arguments found. `mix tz_world.update` accepts the following:
-          --include-oceans
-          --no-include-oceans (default)
-          --force
-          --no-force (default)
-          --trace
-          --no-trace (default)
-        """,
-        exit_status: 1)
+          """
+          Invalid arguments found. `mix tz_world.update` accepts the following:
+            --include-oceans
+            --no-include-oceans (default)
+            --force
+            --no-force (default)
+            --trace
+            --no-trace (default)
+          """,
+          exit_status: 1
+        )
     end
   end
 

@@ -2,8 +2,13 @@ defmodule TzWorldTest do
   use ExUnit.Case
   doctest TzWorld
 
-  @backends [TzWorld.Backend.Memory, TzWorld.Backend.Dets, TzWorld.Backend.Ets,
-    TzWorld.Backend.EtsWithIndexCache, TzWorld.Backend.DetsWithIndexCache]
+  @backends [
+    TzWorld.Backend.Memory,
+    TzWorld.Backend.Dets,
+    TzWorld.Backend.Ets,
+    TzWorld.Backend.EtsWithIndexCache,
+    TzWorld.Backend.DetsWithIndexCache
+  ]
 
   setup_all do
     for backend <- @backends do

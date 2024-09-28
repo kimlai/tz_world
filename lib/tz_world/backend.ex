@@ -27,5 +27,4 @@ defmodule TzWorld.Backend do
   Reloads the (potentially updated) timezone data
   """
   @callback reload_timezone_data :: {:ok, term}
-
 end

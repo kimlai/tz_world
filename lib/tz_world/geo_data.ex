@@ -10,8 +10,8 @@ defmodule TzWorld.GeoData do
 
   def default_data_dir do
     TzWorld.app_name()
-    |> :code.priv_dir
-    |> List.to_string
+    |> :code.priv_dir()
+    |> List.to_string()
   end
 
   def data_dir do
@@ -47,7 +47,7 @@ defmodule TzWorld.GeoData do
 
   def transform_source_data(source_data, version) when is_list(source_data) do
     source_data
-    |> :erlang.list_to_binary
+    |> :erlang.list_to_binary()
     |> transform_source_data(version)
   end
 
@@ -59,7 +59,7 @@ defmodule TzWorld.GeoData do
         |> :erlang.term_to_binary()
 
       error ->
-        raise RuntimeError, "Unable to unzip downloaded data. Error: #{inspect error}"
+        raise RuntimeError, "Unable to unzip downloaded data. Error: #{inspect(error)}"
     end
   end
 
@@ -100,7 +100,6 @@ defmodule TzWorld.GeoData do
   defp calculate_bounding_box(
          %Geo.MultiPolygon{coordinates: polygons, properties: properties} = poly
        ) do
-
     bounding_boxes = Enum.map(polygons, &calculate_bounding_box/1)
     properties = Map.put(properties, :bounding_box, bounding_boxes)
 

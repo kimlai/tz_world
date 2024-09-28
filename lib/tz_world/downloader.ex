@@ -94,7 +94,6 @@ defmodule TzWorld.Downloader do
       {:error, :enoent} ->
         {latest_release, asset_url} = latest_release(include_oceans?)
         get_and_load_latest_release(latest_release, asset_url)
-
     end
   end
 
@@ -119,10 +118,13 @@ defmodule TzWorld.Downloader do
   defp get_releases(trace?) do
     with {:ok, json} <- get_url(@release_url),
          {:ok, releases} <- Jason.decode(json) do
-      maybe_log("Retrieved list of #{Enum.count(releases)} available timezone data releases.", trace?)
+      maybe_log(
+        "Retrieved list of #{Enum.count(releases)} available timezone data releases.",
+        trace?
+      )
+
       {:ok, releases}
     end
-
   end
 
   def get_url(url) do
@@ -159,12 +161,12 @@ defmodule TzWorld.Downloader do
 
   * `:timeout` is the number of milliseconds available
     for the request to complete. The default is
-    #{inspect @tzworld_default_timeout}. This option may also be
+    #{inspect(@tzworld_default_timeout)}. This option may also be
     set with the `CLDR_HTTP_TIMEOUT` environment variable.
 
   * `:connection_timeout` is the number of milliseconds
     available for the a connection to be estabklished to
-    the remote host. The default is #{inspect @tzworld_default_connection_timeout}.
+    the remote host. The default is #{inspect(@tzworld_default_connection_timeout)}.
     This option may also be set with the
     `CLDR_HTTP_CONNECTION_TIMEOUT` environment variable.
 
@@ -233,8 +235,8 @@ defmodule TzWorld.Downloader do
   ```
 
   """
-  @spec get(String.t | {String.t, list()}, options :: Keyword.t) ::
-    {:ok, binary} | {:not_modified, any()} | {:error, any}
+  @spec get(String.t() | {String.t(), list()}, options :: Keyword.t()) ::
+          {:ok, binary} | {:not_modified, any()} | {:error, any}
 
   def get(url, options \\ [])
 
@@ -245,7 +247,8 @@ defmodule TzWorld.Downloader do
     end
   end
 
-  def get({url, headers}, options) when is_binary(url) and is_list(headers) and is_list(options) do
+  def get({url, headers}, options)
+      when is_binary(url) and is_list(headers) and is_list(options) do
     case get_with_headers({url, headers}, options) do
       {:ok, _headers, body} -> {:ok, body}
       other -> other
@@ -281,12 +284,12 @@ defmodule TzWorld.Downloader do
 
   * `:timeout` is the number of milliseconds available
     for the request to complete. The default is
-    #{inspect @tzworld_default_timeout}. This option may also be
+    #{inspect(@tzworld_default_timeout)}. This option may also be
     set with the `CLDR_HTTP_TIMEOUT` environment variable.
 
   * `:connection_timeout` is the number of milliseconds
     available for the a connection to be estabklished to
-    the remote host. The default is #{inspect @tzworld_default_connection_timeout}.
+    the remote host. The default is #{inspect(@tzworld_default_connection_timeout)}.
     This option may also be set with the
     `CLDR_HTTP_CONNECTION_TIMEOUT` environment variable.
 
@@ -371,8 +374,8 @@ defmodule TzWorld.Downloader do
   """
   @doc since: "2.21.0"
 
-  @spec get_with_headers(String.t | {String.t, list()}, options :: Keyword.t) ::
-    {:ok, list(), binary} | {:not_modified, any()} | {:error, any}
+  @spec get_with_headers(String.t() | {String.t(), list()}, options :: Keyword.t()) ::
+          {:ok, list(), binary} | {:not_modified, any()} | {:error, any}
 
   def get_with_headers(request, options \\ [])
 
@@ -380,7 +383,8 @@ defmodule TzWorld.Downloader do
     get_with_headers({url, []}, options)
   end
 
-  def get_with_headers({url, headers}, options) when is_binary(url) and is_list(headers) and is_list(options) do
+  def get_with_headers({url, headers}, options)
+      when is_binary(url) and is_list(headers) and is_list(options) do
     require Logger
 
     hostname = String.to_charlist(URI.parse(url).host)
@@ -392,8 +396,12 @@ defmodule TzWorld.Downloader do
       case URI.parse(https_proxy) do
         %{host: host, port: port} when is_binary(host) and is_integer(port) ->
           :httpc.set_options([{:https_proxy, {{String.to_charlist(host), port}, []}}])
+
         _other ->
-          Logger.bare_log(:warning, "https_proxy was set to an invalid value. Found #{inspect https_proxy}.")
+          Logger.bare_log(
+            :warning,
+            "https_proxy was set to an invalid value. Found #{inspect(https_proxy)}."
+          )
       end
     end
 
@@ -407,7 +415,7 @@ defmodule TzWorld.Downloader do
       {_, {{_version, code, message}, _headers, _body}} ->
         Logger.bare_log(
           :error,
-          "Failed to download #{inspect url}. " <>
+          "Failed to download #{inspect(url)}. " <>
             "HTTP Error: (#{code}) #{inspect(message)}"
         )
 
@@ -417,15 +425,15 @@ defmodule TzWorld.Downloader do
         if sys_message == :timeout do
           Logger.bare_log(
             :error,
-            "Timeout connecting to #{inspect(host)} to download #{inspect url}. " <>
-            "Connection time exceeded #{http_options[:connect_timeout]}ms."
+            "Timeout connecting to #{inspect(host)} to download #{inspect(url)}. " <>
+              "Connection time exceeded #{http_options[:connect_timeout]}ms."
           )
 
           {:error, :connection_timeout}
         else
           Logger.bare_log(
             :error,
-            "Failed to connect to #{inspect(host)} to download #{inspect url}"
+            "Failed to connect to #{inspect(host)} to download #{inspect(url)}"
           )
 
           {:error, sys_message}
@@ -434,7 +442,7 @@ defmodule TzWorld.Downloader do
       {:error, {other}} ->
         Logger.bare_log(
           :error,
-          "Failed to download #{inspect url}. Error #{inspect other}"
+          "Failed to download #{inspect(url)}. Error #{inspect(other)}"
         )
 
         {:error, other}
@@ -442,9 +450,10 @@ defmodule TzWorld.Downloader do
       {:error, :timeout} ->
         Logger.bare_log(
           :error,
-          "Timeout downloading from #{inspect url}. " <>
-          "Request exceeded #{http_options[:timeout]}ms."
+          "Timeout downloading from #{inspect(url)}. " <>
+            "Request exceeded #{http_options[:timeout]}ms."
         )
+
         {:error, :timeout}
     end
   end
@@ -578,7 +587,7 @@ defmodule TzWorld.Downloader do
         reuse_sessions: true,
         versions: protocol_versions(),
         ciphers: preferred_ciphers(),
-        versions: protocol_versions(),
+        versions: protocol_versions()
       ]
     end
   end
@@ -618,7 +627,7 @@ defmodule TzWorld.Downloader do
   defp preferred_eccs do
     # TLS curves: X25519, prime256v1, secp384r1
     preferred_eccs = [:secp256r1, :secp384r1]
-    :ssl.eccs() -- (:ssl.eccs() -- preferred_eccs)
+    :ssl.eccs() -- :ssl.eccs() -- preferred_eccs
   end
 
   defp secure_ssl? do
@@ -632,13 +641,12 @@ defmodule TzWorld.Downloader do
 
   defp https_proxy(options) do
     options[:https_proxy] ||
-    Application.get_env(:tz_world, :https_proxy) ||
-    System.get_env("HTTPS_PROXY") ||
-    System.get_env("https_proxy")
+      Application.get_env(:tz_world, :https_proxy) ||
+      System.get_env("HTTPS_PROXY") ||
+      System.get_env("https_proxy")
   end
 
   def otp_version do
-    :erlang.system_info(:otp_release) |> List.to_integer
+    :erlang.system_info(:otp_release) |> List.to_integer()
   end
-
 end
