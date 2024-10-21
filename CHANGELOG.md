@@ -1,5 +1,13 @@
 ## Changelog for Tz_World
 
+## Tz_World v1.4.1
+
+This is the changelog for Tz_World v1.4.1 released on ______, 2024.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
+
+### Bug Fixes
+
+* Don't include `:wx` and `:observer` in `:extra_applications` since this propogates and `:wx` may not be compiled in the target runtime. Thanks to @mayel for the report. Fixes #43.
+
 ## Tz_World v1.4.0
 
 This is the changelog for Tz_World v1.4.0 released on September 29th, 2024.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
