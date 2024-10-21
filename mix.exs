@@ -25,7 +25,7 @@ defmodule TzWorld.Mixfile do
 
   def application do
     [
-      extra_applications: [:logger, :public_key, :inets, :ssl] ++ observer_if_configured()
+      extra_applications: [:logger, :public_key, :inets, :ssl]
     ]
   end
 
@@ -61,14 +61,6 @@ defmodule TzWorld.Mixfile do
         "LICENSE*"
       ]
     ]
-  end
-
-  defp observer_if_configured do
-    if Application.get_application(:wx) && Application.get_application(:observer) do
-      [:wx, :observer]
-    else
-      []
-    end
   end
 
   @priv "priv"
