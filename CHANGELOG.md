@@ -2,7 +2,7 @@
 
 ## Tz_World v1.4.1
 
-This is the changelog for Tz_World v1.4.1 released on ______, 2024.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
+This is the changelog for Tz_World v1.4.1 released on October 21st, 2024.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
 
 ### Bug Fixes
 
