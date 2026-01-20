@@ -1,5 +1,13 @@
 ## Changelog for Tz_World
 
+## Tz_World v1.4.2
+
+This is the changelog for Tz_World v1.4.2 released on January 19th, 2026.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)
+
+### Bug Fixes
+
+* Fix absoluate path error in the zip file generation. For security reasons, the contents of a zip file should not have an absolute path. THis is now corrected.
+
 ## Tz_World v1.4.1
 
 This is the changelog for Tz_World v1.4.1 released on October 21st, 2024.  For older changelogs please consult the release tag on [GitHub](https://github.com/kimlai/tz_world/tags)

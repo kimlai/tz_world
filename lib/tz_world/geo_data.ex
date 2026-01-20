@@ -3,6 +3,7 @@ defmodule TzWorld.GeoData do
 
   @compressed_data_file "timezones-geodata.etf.zip"
   @etf_data_file "timezones-geodata.etf"
+  @priv_path "./priv"
   @osm_srid 3857
 
   defdelegate version, to: TzWorld
@@ -25,9 +26,9 @@ defmodule TzWorld.GeoData do
   end
 
   def etf_data_path do
-    data_dir()
+    @priv_path
     |> Path.join(@etf_data_file)
-    |> to_charlist
+    |> to_charlist()
   end
 
   def generate_compressed_data(source_data, version, trace? \\ false) when is_list(source_data) do
@@ -74,9 +75,8 @@ defmodule TzWorld.GeoData do
   end
 
   defp json_decode!(string) do
-    {json, :ok, ""} = :json.decode(string, :ok, %{null: nil})
-    json
-    # Jason.decode!(string)
+    # {json, :ok, ""} = :json.decode(string, :ok, %{null: nil})
+    Jason.decode!(string)
   end
 
   defp update_map_keys(%{properties: properties} = poly) do
