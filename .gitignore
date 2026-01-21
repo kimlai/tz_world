@@ -23,3 +23,6 @@ erl_crash.dump
 /priv/timezones-geodata.json.zip
 /priv/timezones-geodata.dets
 TIMEZONES_GEOJSON_VERSION
+
+# Mise
+mise.toml
