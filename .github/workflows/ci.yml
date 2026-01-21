@@ -93,6 +93,9 @@ jobs:
     # - name: Check Formatting
     #   run: mix format --check-formatted
 
+    - name: Download shape data
+      run: mix tz_world.update
+
     # Step: Execute the tests.
     - name: Run tests
       run: mix test
